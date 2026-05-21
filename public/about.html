@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    fetch('/api/data/about')
+      .then(res => res.json())
+      .then(data => {
+        const heroTag        = data.heroTag        || 'Our Story';
+        const heroTitle      = data.heroTitle      || 'About Our School';
+        const sectionHeading = data.sectionHeading || 'Shakespeare Ideal Matriculation School';
+        const content        = data.content        ||
+          'Shakespeare Ideal Matriculation School was established in 2000 with the noble vision of providing high-quality education accessible to every child. Located in a serene, pollution-free environment, our school stands as a temple of learning where knowledge meets character. Affiliated to the Tamil Nadu Matriculation Board, we offer education from LKG to Class X with a strong emphasis on academic excellence, co-curricular development, and moral values. Our school is recognized as one of the leading Matric schools in the district. We believe every child is unique and gifted. Our faculty of 48 experienced teachers employs innovative teaching methodologies tailored to nurture each student\'s individual strengths, ensuring no child is left behind.';
+        const timelineHeading = data.timelineHeading || 'Our Journey Through the Years';
+
+        const metaBadges = data.metaBadges || [
+          { icon: '📍', label: 'Location',    value: 'Anna Nagar, Chennai – 600 040' },
+          { icon: '🏫', label: 'Type',        value: 'Tamil Nadu Matric Board' },
+          { icon: '📅', label: 'Established', value: 'Year 2000' },
+          { icon: '👦', label: 'Medium',      value: 'Tamil &amp; English Medium' }
+        ];
+
+        const quickFacts = data.quickFacts || [
+          { label: 'Students',    value: '>1200'         },
+          { label: 'Teachers',    value: '48'            },
+          { label: 'Classrooms',  value: '36'            },
+          { label: 'Labs',        value: '5'             },
+          { label: 'Library',     value: 'Yes'           },
+          { label: 'Play Grounds',value: '3'             },
+          { label: 'Buses',       value: '8 Routes'      },
+          { label: 'Pass Rate',   value: '100% (2024)'   }
+        ];
+
+        const milestones = data.milestones || [
+          { year: '2000', title: 'Foundation',       description: 'School founded with a vision to provide quality education to rural and semi-urban children.' },
+          { year: '2005', title: 'First Batch',      description: 'First SSLC batch achieves 98% pass rate, establishing academic credibility.' },
+          { year: '2010', title: 'Expansion',        description: 'New science block and computer lab added; strength reaches 800 students.' },
+          { year: '2015', title: 'Sports Excellence',description: 'State-level cricket and athletics teams formed; multiple district championships.' },
+          { year: '2020', title: 'Silver Jubilee',   description: '20 years of excellence; 3000+ alumni across India and abroad.' },
+          { year: '2024', title: '100% SSLC',        description: 'Historic 100% pass with 85% distinction in SSLC Board Examinations.' }
+        ];
+
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(heroTag, heroTitle)}
+
+          <div class="about-main-container">
+            <div class="about-layout-grid">
+              <div>
+                <h2 class="about-section-heading">${sectionHeading}</h2>
+                <p class="about-section-text">${content.replace(/\n/g, '<br>')}</p>
+                <div class="about-cards-grid">
+                  ${metaBadges.map(b => `
+                  <div class="about-meta-badge">
+                    <div class="about-meta-icon">${b.icon || ''}</div>
+                    <div class="about-meta-label">${b.label || ''}</div>
+                    <div class="about-meta-val">${b.value || ''}</div>
+                  </div>`).join('')}
+                </div>
+              </div>
+
+              <div>
+                <div class="card about-facts-panel">
+                  <h3 class="about-facts-heading">Quick Facts</h3>
+                  ${quickFacts.map(fact => `
+                    <div class="about-fact-row">
+                      <span class="about-fact-label">${fact.label}</span>
+                      <span class="about-fact-value">${fact.value}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <div class="about-timeline-section">
+              <h3 class="about-timeline-heading">${timelineHeading}</h3>
+              <div class="about-timeline-wrapper">
+                <div class="about-timeline-line"></div>
+                ${milestones.map((m, idx) => `
+                  <div class="about-timeline-item">
+                    <div class="about-timeline-bullet ${idx % 2 === 0 ? 'bullet-teal' : 'bullet-gold'}"></div>
+                    <div class="about-timeline-header-row">
+                      <span class="about-timeline-year">${m.year}</span>
+                      <span class="about-timeline-title">${m.title}</span>
+                    </div>
+                    <p class="about-timeline-desc">${m.description}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error('Error loading about data:', err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+</body>
+</html>

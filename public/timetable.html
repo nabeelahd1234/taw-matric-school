@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Table - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    
+  </style>
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+  <div id="page-content"></div>
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script>
+    // Days and periods used as defaults when the API returns no data for a class
+    const DEFAULT_DAYS = [
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+    ];
+    const DEFAULT_PERIODS = [
+      { name: '1st Period',  start: '08:00', end: '08:45' },
+      { name: '2nd Period',  start: '08:45', end: '09:30' },
+      { name: '3rd Period',  start: '09:30', end: '10:15' },
+      { name: 'Break',       start: '10:15', end: '10:30', type: 'break' },
+      { name: '4th Period',  start: '10:30', end: '11:15' },
+      { name: '5th Period',  start: '11:15', end: '12:00' },
+      { name: 'Lunch',       start: '12:00', end: '13:00', type: 'lunch' },
+      { name: '6th Period',  start: '13:00', end: '13:45' },
+      { name: '7th Period',  start: '13:45', end: '14:30' }
+    ];
+
+    let allClasses   = [];
+    let selectedId   = null;   // currently active class id (string key in timetable)
+    let selectedName = null;   // display name
+
+    // ── helpers ────────────────────────────────────────────────────────────────
+
+    function periodLabel(p) {
+      if (p.type === 'break') return `☕ ${p.name}`;
+      if (p.type === 'lunch') return `🍱 ${p.name}`;
+      return `${p.start} – ${p.end}`;
+    }
+
+    function isSpecial(p) {
+      return p.type === 'break' || p.type === 'lunch';
+    }
+
+    function buildTable(days, periods, schedule) {
+      // schedule format: { "dayIndex_periodIndex": { subject, startTime, endTime } }
+      const colCount = days.length;
+
+      const headerCells = `
+        <div class="timetable-header-cell">Period / Day</div>
+        ${days.map(d => `<div class="timetable-header-cell timetable-header-day">${d}</div>`).join('')}
+      `;
+
+      const bodyCells = periods.map((p, pi) => {
+        const special = isSpecial(p);
+        const periodClass = special ? 'timetable-period-break' : 'timetable-period-normal';
+
+        const dayCells = days.map((_, di) => {
+          if (special) {
+            return `<div class="timetable-data-cell timetable-period-break">${p.type === 'break' ? '☕' : '🍱'}</div>`;
+          }
+          const key = `${di}_${pi}`;
+          const cell = (schedule && schedule[key]) ? schedule[key].subject || '—' : '—';
+          return `<div class="timetable-data-cell">${cell}</div>`;
+        }).join('');
+
+        return `
+          <div class="timetable-period-cell ${periodClass}">${periodLabel(p)}</div>
+          ${dayCells}
+        `;
+      }).join('');
+
+      return `
+        <div
+          class="timetable-grid"
+          style="grid-template-columns: 130px repeat(${colCount}, 1fr);"
+        >
+          ${headerCells}
+          ${bodyCells}
+        </div>
+      `;
+    }
+
+    // ── render class timetable ─────────────────────────────────────────────────
+
+    function renderTimetableForClass(classId, className) {
+      const tableArea = document.getElementById('timetable-table-area');
+      if (!tableArea) return;
+
+      tableArea.innerHTML = `<div class="timetable-loading">Loading timetable for Class ${className}…</div>`;
+
+      fetch(`/api/timetable/${classId}`)
+        .then(res => {
+          if (!res.ok) throw new Error(`Server error ${res.status}`);
+          return res.json();
+        })
+        .then(data => {
+          const days    = (data.days    && data.days.length)    ? data.days    : DEFAULT_DAYS;
+          const periods = (data.periods && data.periods.length) ? data.periods : DEFAULT_PERIODS;
+          const schedule = data.schedule || {};
+
+          if (!data.periods || !data.periods.length) {
+            tableArea.innerHTML = `
+              <div class="timetable-empty">
+                <div class="timetable-empty-icon">📋</div>
+                <p>No timetable has been configured for <strong>Class ${className}</strong> yet.</p>
+                <p style="margin-top:6px;font-size:12px">Please check with the school office or contact your admin.</p>
+              </div>
+            `;
+            return;
+          }
+
+          tableArea.innerHTML = buildTable(days, periods, schedule);
+        })
+        .catch(err => {
+          console.error('Timetable fetch error:', err);
+          tableArea.innerHTML = `
+            <div class="timetable-empty">
+              <div class="timetable-empty-icon">⚠️</div>
+              <p>Could not load timetable for Class ${className}.</p>
+              <p style="margin-top:6px;font-size:12px">${err.message}</p>
+            </div>
+          `;
+        });
+    }
+
+    // ── tab click ─────────────────────────────────────────────────────────────
+
+    function selectClass(classId, className) {
+      selectedId   = classId;
+      selectedName = className;
+
+      // update active tab style
+      document.querySelectorAll('.class-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.id === String(classId));
+      });
+
+      renderTimetableForClass(classId, className);
+    }
+
+    // ── page init ─────────────────────────────────────────────────────────────
+
+    // FIX: The old code called fetch('/api/timetable') which didn't exist on the
+    // server — only /api/timetable/:classId was defined. The server fell through
+    // to the page-router which returned an HTML 404 page, causing:
+    //   "SyntaxError: Unexpected token '<', '<!DOCTYPE...' is not valid JSON"
+    //
+    // Fix: fetch /api/timetable (now a real route that returns classes + timetable)
+    // then let the user pick a class, and load /api/timetable/:classId on demand.
+
+    fetch('/api/timetable')
+      .then(res => {
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        allClasses = data.classes || [];
+
+        // Deduplicate by name so each class name appears once in the tab bar
+        const seen = new Set();
+        const uniqueClasses = allClasses.filter(c => {
+          if (seen.has(c.name)) return false;
+          seen.add(c.name);
+          return true;
+        });
+
+        const tabsHtml = uniqueClasses.map(c =>
+          `<button
+            class="class-tab-btn"
+            data-id="${c.id}"
+            data-name="${c.name}"
+            onclick="selectClass(${c.id}, '${c.name}')"
+          >${c.name}</button>`
+        ).join('');
+
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero('Academic Schedule', 'School Time Table')}
+
+          <div class="timetable-container">
+            <div class="card">
+
+              ${uniqueClasses.length > 0 ? `
+                <p style="color:#6b7280;font-size:13px;margin-bottom:12px;">
+                  Select a class to view its timetable:
+                </p>
+                <div class="class-tabs">${tabsHtml}</div>
+              ` : ''}
+
+              <div id="timetable-table-area">
+                ${uniqueClasses.length === 0
+                  ? `<div class="timetable-empty">
+                       <div class="timetable-empty-icon">📋</div>
+                       <p>No classes have been configured yet.</p>
+                     </div>`
+                  : `<div class="timetable-loading">Select a class above to view its timetable.</div>`
+                }
+              </div>
+
+              <p class="timetable-note" style="margin-top:16px;">
+                * Detailed class-wise timetable is also available at the school office and notice board.
+              </p>
+
+            </div>
+          </div>
+        `;
+
+        // Auto-select the first class if available
+        if (uniqueClasses.length > 0) {
+          selectClass(uniqueClasses[0].id, uniqueClasses[0].name);
+        }
+      })
+      .catch(err => {
+        console.error('Timetable page error:', err);
+        document.getElementById('page-content').innerHTML = School.renderError
+          ? School.renderError()
+          : `<div style="text-align:center;padding:40px;color:#e53e3e;">
+               <p>⚠️ Failed to load timetable. Please try again later.</p>
+               <p style="font-size:12px;margin-top:8px;">${err.message}</p>
+             </div>`;
+      });
+  </script>
+</body>
+</html>

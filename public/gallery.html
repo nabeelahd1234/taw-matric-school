@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/gallery')
+      .then(res => res.json())
+      .then(data => {
+  
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(
+            'Memories',
+            'School Gallery'
+          )}
+  
+          <div class="gallery-container">
+  
+            <div class="gallery-grid">
+  
+              ${data.map(g => `
+                <div class="gallery-card">
+  
+                  <img
+                    src="${g.filename}"
+                    alt="${g.title}"
+                    class="gallery-image"
+                  >
+  
+                  <div class="gallery-overlay">
+  
+                    <p class="gallery-title">
+                      ${g.title}
+                    </p>
+  
+                    <span class="tag gallery-tag">
+                      ${g.cat}
+                    </span>
+  
+                  </div>
+  
+                </div>
+              `).join('')}
+  
+            </div>
+  
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+  
+        document.getElementById('page-content').innerHTML =
+          School.renderError();
+      });
+  </script>
+</body>
+</html>

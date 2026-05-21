@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules & Regulations - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script>
+    fetch('/api/data/rulesRegulations')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(
+            data.heroTitle || 'Student Guidelines',
+            data.heroSubtitle || 'Rules & Regulations'
+          )}
+
+          <section class="rules-wrapper">
+            <div class="rules-intro card">
+              <h2>${data.introduction?.title || 'School Discipline Policy'}</h2>
+              <p>${data.introduction?.description || ''}</p>
+            </div>
+
+            <div class="rules-grid">
+              ${(data.sections || []).map(section => `
+                <div class="card rule-card">
+                  <div class="rule-header">
+                    <span class="rule-icon">${section.icon || '📘'}</span>
+                    <h3>${section.title}</h3>
+                  </div>
+
+                  <ul class="rules-list">
+                    ${(section.rules || []).map(rule => `
+                      <li>
+                        <span class="rule-bullet">✔</span>
+                        <span>${rule}</span>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="rules-footer card">
+              <h3>${data.note?.title || 'Important Note'}</h3>
+              <p>${data.note?.description || ''}</p>
+            </div>
+          </section>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+
+  <style>
+    
+  </style>
+</body>
+</html>

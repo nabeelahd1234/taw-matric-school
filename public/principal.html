@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Principal - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/data/principal')
+      .then(res => res.json())
+      .then(data => {
+
+        const heroTag        = data.heroTag        || 'Leadership';
+        const heroTitle      = data.heroTitle      || 'About Our Principal';
+        const avatar         = data.avatar         || '👩‍🏫';
+        const name           = data.name           || 'Dr. Meenakshi Sundaram';
+        const qualification  = data.qualification  || 'M.Sc., M.Ed., Ph.D.';
+        const role           = data.title          || 'Principal';
+        const messageTag     = data.messageTag     || 'A Message from the Principal';
+        const messageHeading = data.messageHeading || 'Shaping Futures, Inspiring Lives';
+        const message        = data.message        || 'Education is not merely about acquiring knowledge; it is about cultivating wisdom, building character, and inspiring students to discover their highest potential.';
+        const bio            = data.bio            || 'Dr. Meenakshi Sundaram brings 28 years of rich experience in education management, curriculum development, and child psychology. She joined Shakespeare Ideal Matriculation School in 2012 and has since transformed it into one of the most sought-after schools in the region.';
+
+        // Use dynamic stats array if present, else fall back to legacy flat fields
+        const stats = (data.stats && data.stats.length > 0) ? data.stats : [
+          { label: 'Experience',     value: data.experience     || '28 Years'           },
+          { label: 'Qualification',  value: data.qualification  || 'Ph.D. in Education'  },
+          { label: 'Specialization', value: data.specialization || 'Child Psychology'    },
+          { label: 'Awards',         value: data.awards         || '3 State Awards'      }
+        ];
+
+        const statsRows = stats.map(({ label, value }) => `
+          <div class="principal-stat-row">
+            <span class="principal-stat-label">${label}</span>
+            <span class="principal-stat-value">${value}</span>
+          </div>
+        `).join('');
+
+        const avatarHtml = data.photo
+          ? `<img src="${data.photo}" class="principal-photo" alt="${name}">`
+          : `<div class="principal-avatar">${avatar}</div>`;
+
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(heroTag, heroTitle)}
+
+          <div class="principal-container">
+            <div class="principal-grid">
+
+              <div class="principal-profile">
+                ${avatarHtml}
+                <h2 class="principal-name">${name}</h2>
+                <p class="principal-title">${qualification} — ${role}</p>
+                <div class="principal-stats">${statsRows}</div>
+              </div>
+
+              <div>
+                <span class="tag">${messageTag}</span>
+                <h3 class="principal-heading">${messageHeading}</h3>
+                <p class="principal-message">"${message}"</p>
+                <p class="principal-bio">${bio}</p>
+              </div>
+
+            </div>
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+</body>
+</html>

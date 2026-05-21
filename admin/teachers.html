@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachers — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    /* ── Row action buttons spacing ── */
+    
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Teachers</div>
+    <div class="topbar-meta">
+      <a href="/index.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = { teachers: [] };
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.getElementById('sidebarEl').innerHTML = buildSidebar('people', 'teachers');
+
+async function init() {
+  state.teachers = await apiGet('/api/teachers').catch(() => []);
+  renderTeachers(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TEACHERS
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderTeachers(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">
+        👩‍🏫 Faculty Directory
+        <span class="badge badge-green">${state.teachers.length} teachers</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:56px">Photo</th>
+              <th>Name</th>
+              <th>Subject</th>
+              <th>Qualification</th>
+              <th>Experience</th>
+              <th style="width:160px; text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tchTbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+  refreshTeacherTable();
+}
+
+function refreshTeacherTable() {
+  const tb = document.getElementById('tchTbody');
+  if (!tb) return;
+
+  const rows = state.teachers.map(t => `
+    <tr id="tcrow-${t.id}">
+      <td>
+        <img src="${t.photo || '/images/default-teacher-avatar.png'}"
+             class="profile-thumb"
+             onerror="this.onerror=null;this.src='/images/default-teacher-avatar.png'">
+      </td>
+      <td><input id="tcn-${t.id}" value="${esc(t.name)}"              style="min-width:130px"></td>
+      <td><input id="tcs-${t.id}" value="${esc(t.subject||'')}"       style="min-width:130px"></td>
+      <td><input id="tcq-${t.id}" value="${esc(t.qualification||'')}" style="min-width:110px"></td>
+      <td><input id="tce-${t.id}" value="${esc(t.experience||'')}"    style="width:100px"></td>
+      <td style="text-align:right">
+        <div class="row-actions">
+          <button class="btn btn-success btn-sm" onclick="saveTeacher(${t.id})">💾 Save</button>
+          <button class="btn btn-danger btn-sm"  onclick="deleteTeacher(${t.id})">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+
+  const addRow = `
+    <tr style="background:#f8fafc">
+      <td>
+        <label style="cursor:pointer">
+          <input type="file" id="tch-photo-new" accept="image/*" style="display:none">
+          <span style="font-size:20px">📷</span>
+        </label>
+      </td>
+      <td><input id="tcn-new" placeholder="Full Name"></td>
+      <td><input id="tcs-new" placeholder="Subject"></td>
+      <td><input id="tcq-new" placeholder="Qualification"></td>
+      <td><input id="tce-new" placeholder="Experience"></td>
+      <td style="text-align:right">
+        <button class="btn btn-primary btn-sm" onclick="addTeacher()">➕ Add</button>
+      </td>
+    </tr>`;
+
+  tb.innerHTML = rows + addRow;
+}
+
+window.saveTeacher = async (id) => {
+  const fd = new FormData();
+  fd.append('name',          document.getElementById(`tcn-${id}`).value.trim());
+  fd.append('subject',       document.getElementById(`tcs-${id}`).value.trim());
+  fd.append('qualification', document.getElementById(`tcq-${id}`).value.trim());
+  fd.append('experience',    document.getElementById(`tce-${id}`).value.trim());
+  await api(`/api/teachers/${id}`, { method: 'PUT', body: fd });
+  state.teachers = await apiGet('/api/teachers');
+  toast('Teacher saved.');
+  refreshTeacherTable();
+};
+
+window.deleteTeacher = async (id) => {
+  if (!confirm('Delete this teacher?')) return;
+  await api(`/api/teachers/${id}`, { method: 'DELETE' });
+  state.teachers = await apiGet('/api/teachers');
+  toast('Teacher deleted.');
+  refreshTeacherTable();
+};
+
+window.addTeacher = async () => {
+  const name = document.getElementById('tcn-new').value.trim();
+  if (!name) return toast('Teacher name required.', 'error');
+  const fd = new FormData();
+  fd.append('name',          name);
+  fd.append('subject',       document.getElementById('tcs-new').value.trim());
+  fd.append('qualification', document.getElementById('tcq-new').value.trim());
+  fd.append('experience',    document.getElementById('tce-new').value.trim());
+  fd.append('type',          'teacher');
+  const photoFile = document.getElementById('tch-photo-new')?.files[0];
+  if (photoFile) fd.append('photo', photoFile);
+  await api('/api/teachers', { method: 'POST', body: fd });
+  state.teachers = await apiGet('/api/teachers');
+  toast('Teacher added.');
+  renderTeachers(document.getElementById('mainContent'));
+};
+
+// ── Start ──────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

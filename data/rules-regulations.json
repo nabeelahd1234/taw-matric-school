@@ -1,0 +1,80 @@
+{
+    "heroTitle": "Student Guidelines",
+    "heroSubtitle": "Rules & Regulations",
+    "introduction": {
+      "title": "School Discipline & Student Conduct",
+      "description": "Students are expected to maintain discipline, respect school values, and actively contribute to a positive learning environment. These rules are designed to ensure safety, academic excellence, and personal growth for every student."
+    },
+    "sections": [
+      {
+        "id": 1,
+        "title": "Attendance & Punctuality",
+        "icon": "⏰",
+        "rules": [
+          "Students must arrive at school before the morning assembly.",
+          "A minimum attendance percentage must be maintained throughout the academic year.",
+          "Leave applications should be submitted in advance through parents or guardians.",
+          "Repeated late arrivals may lead to disciplinary action."
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Uniform & Appearance",
+        "icon": "👔",
+        "rules": [
+          "Students must wear the prescribed school uniform every day.",
+          "Shoes should be clean and polished regularly.",
+          "Fancy accessories, jewellery, and hairstyles are not permitted.",
+          "Identity cards must be carried inside the campus at all times."
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Classroom Discipline",
+        "icon": "📚",
+        "rules": [
+          "Students should maintain silence and discipline during class hours.",
+          "Homework and assignments must be completed on time.",
+          "Respect towards teachers and classmates is mandatory.",
+          "Damage to classroom property will result in penalties."
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Examination Rules",
+        "icon": "📝",
+        "rules": [
+          "Students must carry required stationery for examinations.",
+          "Any form of malpractice during exams is strictly prohibited.",
+          "Late entry into the examination hall may not be allowed.",
+          "Answer sheets must be submitted before leaving the hall."
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Campus Behaviour",
+        "icon": "🏫",
+        "rules": [
+          "Students should keep the school campus neat and clean.",
+          "Bullying, fighting, or disrespectful behaviour is not tolerated.",
+          "Mobile phones and prohibited gadgets are not allowed without permission.",
+          "Students should use school facilities responsibly."
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Transport & Safety",
+        "icon": "🚌",
+        "rules": [
+          "Students using school transport must follow bus safety instructions.",
+          "Standing or shouting inside school buses is prohibited.",
+          "Students should report safety concerns immediately to staff.",
+          "Parents must inform the school about transport changes in advance."
+        ]
+      }
+    ],
+    "note": {
+      "title": "Parent Cooperation",
+      "description": "Parents are requested to support the school administration in maintaining discipline and ensuring that students follow all school rules sincerely."
+    }
+  }

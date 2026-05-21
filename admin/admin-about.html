@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Page — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">📄 About Page</div>
+    <div class="topbar-meta">
+      <a href="/about.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+// ── Default data ──────────────────────────────
+const DEFAULT_QUICK_FACTS = [
+  { label: 'Students',     value: '>1200' },
+  { label: 'Teachers',     value: '48' },
+  { label: 'Classrooms',   value: '36' },
+  { label: 'Labs',         value: '5' },
+  { label: 'Library',      value: 'Yes' },
+  { label: 'Play Grounds', value: '3' },
+  { label: 'Buses',        value: '8 Routes' },
+  { label: 'Pass Rate',    value: '100% (2024)' }
+];
+const DEFAULT_MILESTONES = [
+  { year: '2000', title: 'Foundation',      description: 'School founded with a vision to provide quality education to rural and semi-urban children.' },
+  { year: '2005', title: 'First Batch',     description: 'First SSLC batch achieves 98% pass rate, establishing academic credibility.' },
+  { year: '2010', title: 'Expansion',       description: 'New science block and computer lab added; strength reaches 800 students.' },
+  { year: '2015', title: 'Sports Excellence',description: 'State-level cricket and athletics teams formed; multiple district championships.' },
+  { year: '2020', title: 'Silver Jubilee',  description: '20 years of excellence; 3000+ alumni across India and abroad.' },
+  { year: '2024', title: '100% SSLC',       description: 'Historic 100% pass with 85% distinction in SSLC Board Examinations.' }
+];
+const DEFAULT_META_BADGES = [
+  { icon: '📍', label: 'Location',    value: 'Anna Nagar, Chennai – 600 040' },
+  { icon: '🏫', label: 'Type',        value: 'Tamil Nadu Matric Board' },
+  { icon: '📅', label: 'Established', value: 'Year 2000' },
+  { icon: '👦', label: 'Medium',      value: 'Tamil & English Medium' }
+];
+
+// ── State ─────────────────────────────────────
+let state = { about: {} };
+
+document.getElementById('sidebarEl').innerHTML = buildSidebar('pages', 'about');
+
+async function init() {
+  state.about = await apiGet('/api/data/about').catch(() => ({}));
+  if (!state.about.content) state.about.content = '';
+  if (!Array.isArray(state.about.quickFacts)  || !state.about.quickFacts.length)  state.about.quickFacts  = DEFAULT_QUICK_FACTS;
+  if (!Array.isArray(state.about.milestones)  || !state.about.milestones.length)  state.about.milestones  = DEFAULT_MILESTONES;
+  if (!Array.isArray(state.about.metaBadges)  || !state.about.metaBadges.length)  state.about.metaBadges  = DEFAULT_META_BADGES;
+  render();
+}
+
+// ── Render ────────────────────────────────────
+function render() {
+  const d  = state.about;
+  const qf = d.quickFacts || [];
+  const ms = d.milestones || [];
+  const mb = d.metaBadges || [];
+
+  document.getElementById('mainContent').innerHTML = `
+  <style>
+    .ab-section { background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden; }
+    .ab-section-header { display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:var(--sidebar-bg,#f8fafc);border-bottom:1px solid var(--border);gap:10px; }
+    .ab-section-header-left { display:flex;align-items:center;gap:9px; }
+    .ab-section-icon { font-size:17px;line-height:1; }
+    .ab-section-title { font-size:13px;font-weight:700;color:var(--text);letter-spacing:.02em;text-transform:uppercase; }
+    .ab-section-hint { font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0; }
+    .ab-section-body { padding:18px; }
+    .ab-row { display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px; }
+    .ab-row:last-child { margin-bottom:0; }
+    .ab-row .form-group { margin-bottom:0; }
+    .ab-row .form-group label { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block; }
+    .ab-row .form-group input,.ab-row .form-group textarea { padding:6px 10px;font-size:13px; }
+    .ab-del-btn { flex-shrink:0;align-self:center;background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:5px 9px;font-size:14px;cursor:pointer;transition:background .15s;margin-top:16px; }
+    .ab-del-btn:hover { background:#fef2f2; }
+    .ab-empty { text-align:center;padding:18px;color:var(--muted);font-size:13px;font-style:italic; }
+    .ab-add-btn { display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 12px; }
+    .about-save-bar { display:flex;gap:10px;padding:20px 0 4px;border-top:1px solid var(--border);margin-top:4px; }
+    .ab-badge-icon-field { width:70px !important;text-align:center;font-size:18px !important; }
+  </style>
+
+  <div class="card" style="padding-bottom:8px;">
+    <div class="card-title" style="margin-bottom:20px;">📄 About Page — Full Content Editor</div>
+
+    <!-- ① PAGE HERO -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">🎯</span>
+          <span class="ab-section-title">Page Hero</span>
+          <span class="ab-section-hint">— displayed at the top of the About page</span>
+        </div>
+      </div>
+      <div class="ab-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Hero Tag <span style="font-weight:400;color:var(--muted)">(small label above title)</span></label>
+            <input id="ab-heroTag" type="text" value="${esc(d.heroTag || 'Our Story')}" placeholder="Our Story">
+          </div>
+          <div class="form-group">
+            <label>Hero Title <span style="font-weight:400;color:var(--muted)">(main heading)</span></label>
+            <input id="ab-heroTitle" type="text" value="${esc(d.heroTitle || 'About Our School')}" placeholder="About Our School">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② SECTION HEADING -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">🏫</span>
+          <span class="ab-section-title">Section Heading</span>
+          <span class="ab-section-hint">— h2 shown above the description paragraph</span>
+        </div>
+      </div>
+      <div class="ab-section-body">
+        <div class="form-group" style="margin-bottom:0">
+          <label>School Name / Section Heading</label>
+          <input id="ab-sectionHeading" type="text" value="${esc(d.sectionHeading || 'Shakespeare Ideal Matriculation School')}">
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ MAIN DESCRIPTION -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">📝</span>
+          <span class="ab-section-title">About Description</span>
+          <span class="ab-section-hint">— main body text on the About page</span>
+        </div>
+      </div>
+      <div class="ab-section-body">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Content</label>
+          <textarea id="ab-content" rows="6">${esc(d.content || '')}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ META BADGES -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">🏷️</span>
+          <span class="ab-section-title">Info Badges</span>
+          <span class="ab-section-hint">— Location, Type, Established, Medium cards</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm ab-add-btn" id="addBadgeBtn">➕ Add Badge</button>
+      </div>
+      <div class="ab-section-body">
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px;padding:0 2px;">
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Icon</span>
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Label</span>
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Value</span>
+        </div>
+        <div id="badgesContainer">${mb.map(b => renderBadgeRow(b)).join('')}</div>
+        ${mb.length === 0 ? `<div class="ab-empty" id="emptyBadgesMsg">No badges yet. Click "Add Badge" to start.</div>` : ''}
+      </div>
+    </div>
+
+    <!-- ⑤ QUICK FACTS -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">📊</span>
+          <span class="ab-section-title">Quick Facts Panel</span>
+          <span class="ab-section-hint">— key stats shown in the right-side panel</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm ab-add-btn" id="addFactBtn">➕ Add Fact</button>
+      </div>
+      <div class="ab-section-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 40px;gap:8px;margin-bottom:8px;padding:0 2px;">
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Label</span>
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Value</span>
+          <span></span>
+        </div>
+        <div id="quickFactsContainer">${qf.map(f => renderFactRow(f)).join('')}</div>
+        ${qf.length === 0 ? `<div class="ab-empty" id="emptyFactsMsg">No facts yet. Click "Add Fact" to start.</div>` : ''}
+      </div>
+    </div>
+
+    <!-- ⑥ TIMELINE HEADING -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">📜</span>
+          <span class="ab-section-title">Timeline Section Heading</span>
+          <span class="ab-section-hint">— h3 above the milestone timeline</span>
+        </div>
+      </div>
+      <div class="ab-section-body">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Timeline Heading</label>
+          <input id="ab-timelineHeading" type="text" value="${esc(d.timelineHeading || 'Our Journey Through the Years')}" placeholder="Our Journey Through the Years">
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑦ MILESTONES -->
+    <div class="ab-section">
+      <div class="ab-section-header">
+        <div class="ab-section-header-left">
+          <span class="ab-section-icon">🏆</span>
+          <span class="ab-section-title">Milestones</span>
+          <span class="ab-section-hint">— timeline entries (year · title · description)</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm ab-add-btn" id="addMilestoneBtn">➕ Add Milestone</button>
+      </div>
+      <div class="ab-section-body">
+        <div style="display:grid;grid-template-columns:90px 1fr 2fr 40px;gap:8px;margin-bottom:8px;padding:0 2px;">
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Year</span>
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Title</span>
+          <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Description</span>
+          <span></span>
+        </div>
+        <div id="milestonesContainer">${ms.map(m => renderMilestoneRow(m)).join('')}</div>
+        ${ms.length === 0 ? `<div class="ab-empty" id="emptyMilestonesMsg">No milestones yet. Click "Add Milestone" to start.</div>` : ''}
+      </div>
+    </div>
+
+    <!-- SAVE BAR -->
+    <div class="about-save-bar">
+      <button class="btn btn-success" id="saveAboutBtn">💾 Save All About Page Data</button>
+      <button class="btn btn-outline" id="resetAboutBtn" style="background:var(--bg)">↻ Reset to Defaults</button>
+    </div>
+  </div>`;
+
+  document.getElementById('addBadgeBtn').onclick     = () => abAddRow('badge');
+  document.getElementById('addFactBtn').onclick      = () => abAddRow('fact');
+  document.getElementById('addMilestoneBtn').onclick = () => abAddRow('milestone');
+  document.getElementById('saveAboutBtn').onclick    = saveCompleteAboutPage;
+  document.getElementById('resetAboutBtn').onclick   = resetAboutToDefaults;
+}
+
+// ── Row renderers ──────────────────────────────
+function renderBadgeRow(b) {
+  return `<div class="ab-row" style="display:grid;grid-template-columns:70px 1fr 1fr 40px;gap:10px;align-items:center;">
+    <div class="form-group"><input type="text" class="mb-icon ab-badge-icon-field" value="${esc(b.icon||'')}" placeholder="📍" style="text-align:center;font-size:18px;padding:5px;"></div>
+    <div class="form-group"><input type="text" class="mb-label" value="${esc(b.label||'')}" placeholder="e.g. Location"></div>
+    <div class="form-group"><input type="text" class="mb-value" value="${esc(b.value||'')}" placeholder="e.g. Chennai – 600 040"></div>
+    <button type="button" class="ab-del-btn" onclick="abRemoveRow(this)" title="Remove">✕</button>
+  </div>`;
+}
+function renderFactRow(f) {
+  return `<div class="ab-row" style="display:grid;grid-template-columns:1fr 1fr 40px;gap:10px;align-items:center;">
+    <div class="form-group"><input type="text" class="qf-label" value="${esc(f.label||'')}" placeholder="e.g. Students"></div>
+    <div class="form-group"><input type="text" class="qf-value" value="${esc(f.value||'')}" placeholder="e.g. >1200"></div>
+    <button type="button" class="ab-del-btn" onclick="abRemoveRow(this)" title="Remove">✕</button>
+  </div>`;
+}
+function renderMilestoneRow(m) {
+  return `<div class="ab-row" style="display:grid;grid-template-columns:90px 1fr 2fr 40px;gap:10px;align-items:center;">
+    <div class="form-group"><input type="text" class="ms-year" value="${esc(m.year||'')}" placeholder="2024"></div>
+    <div class="form-group"><input type="text" class="ms-title" value="${esc(m.title||'')}" placeholder="Milestone title"></div>
+    <div class="form-group"><input type="text" class="ms-desc" value="${esc(m.description||'')}" placeholder="Brief description"></div>
+    <button type="button" class="ab-del-btn" onclick="abRemoveRow(this)" title="Remove">✕</button>
+  </div>`;
+}
+
+window.abRemoveRow = btn => btn.closest('.ab-row').remove();
+
+window.abAddRow = function(type) {
+  if (type === 'badge') {
+    document.getElementById('badgesContainer').insertAdjacentHTML('beforeend', renderBadgeRow({}));
+    const el = document.getElementById('emptyBadgesMsg'); if (el) el.style.display = 'none';
+  } else if (type === 'fact') {
+    document.getElementById('quickFactsContainer').insertAdjacentHTML('beforeend', renderFactRow({}));
+    const el = document.getElementById('emptyFactsMsg'); if (el) el.style.display = 'none';
+  } else if (type === 'milestone') {
+    document.getElementById('milestonesContainer').insertAdjacentHTML('beforeend', renderMilestoneRow({}));
+    const el = document.getElementById('emptyMilestonesMsg'); if (el) el.style.display = 'none';
+  }
+};
+
+// ── Collect helpers ────────────────────────────
+function collectBadges() {
+  return [...document.querySelectorAll('#badgesContainer .ab-row')].map(row => ({
+    icon:  row.querySelector('.mb-icon')?.value.trim()  || '',
+    label: row.querySelector('.mb-label')?.value.trim() || '',
+    value: row.querySelector('.mb-value')?.value.trim() || ''
+  })).filter(b => b.label || b.value);
+}
+function collectFacts() {
+  return [...document.querySelectorAll('#quickFactsContainer .ab-row')].map(row => ({
+    label: row.querySelector('.qf-label')?.value.trim() || '',
+    value: row.querySelector('.qf-value')?.value.trim() || ''
+  })).filter(f => f.label || f.value);
+}
+function collectMilestones() {
+  return [...document.querySelectorAll('#milestonesContainer .ab-row')].map(row => ({
+    year:        row.querySelector('.ms-year')?.value.trim()  || '',
+    title:       row.querySelector('.ms-title')?.value.trim() || '',
+    description: row.querySelector('.ms-desc')?.value.trim()  || ''
+  })).filter(m => m.year || m.title || m.description);
+}
+
+// ── Save ───────────────────────────────────────
+window.saveCompleteAboutPage = async function() {
+  const updated = {
+    ...state.about,
+    heroTag:         document.getElementById('ab-heroTag')?.value.trim()         || '',
+    heroTitle:       document.getElementById('ab-heroTitle')?.value.trim()       || '',
+    sectionHeading:  document.getElementById('ab-sectionHeading')?.value.trim()  || '',
+    content:         document.getElementById('ab-content')?.value.trim()         || '',
+    timelineHeading: document.getElementById('ab-timelineHeading')?.value.trim() || '',
+    metaBadges:      collectBadges(),
+    quickFacts:      collectFacts(),
+    milestones:      collectMilestones()
+  };
+  try {
+    await api('/api/data/about', { method: 'PUT', body: JSON.stringify(updated) });
+    state.about = updated;
+    toast('✅ About page saved successfully.');
+    render();
+  } catch (err) {
+    toast('❌ Save failed: ' + err.message, 'error');
+  }
+};
+
+window.resetAboutToDefaults = async function() {
+  if (!confirm('Reset all About page content to defaults?')) return;
+  const defaultAbout = {
+    heroTag: 'Our Story', heroTitle: 'About Our School',
+    sectionHeading: 'Shakespeare Ideal Matriculation School',
+    content: 'Shakespeare Ideal Matriculation School was established in 2000 with the noble vision of providing high-quality education accessible to every child.',
+    timelineHeading: 'Our Journey Through the Years',
+    metaBadges:  JSON.parse(JSON.stringify(DEFAULT_META_BADGES)),
+    quickFacts:  JSON.parse(JSON.stringify(DEFAULT_QUICK_FACTS)),
+    milestones:  JSON.parse(JSON.stringify(DEFAULT_MILESTONES))
+  };
+  try {
+    await api('/api/data/about', { method: 'PUT', body: JSON.stringify(defaultAbout) });
+    state.about = defaultAbout;
+    toast('🔄 About page reset to defaults.');
+    render();
+  } catch (err) {
+    toast('Reset failed: ' + err.message, 'error');
+  }
+};
+
+init();
+</script>
+</body>
+</html>

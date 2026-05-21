@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    Admin Login - Shakespeare Ideal School
+  </title>
+
+  <link rel="stylesheet" href="/css/style.css">
+
+
+</head>
+
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <!-- Login Form -->
+  <div class="admin-login-wrapper">
+
+    <div class="admin-login-card">
+
+      <div class="admin-login-icon">
+        🔐
+      </div>
+
+      <h2 class="admin-login-title">
+        Admin Portal
+      </h2>
+
+      <p class="admin-login-subtitle">
+        Shakespeare Ideal Matriculation School
+      </p>
+
+      <div
+        id="errorMsg"
+        class="admin-error-message"
+      ></div>
+
+      <form id="loginForm">
+
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          required
+          class="admin-form-input"
+        >
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+          class="admin-form-input"
+        >
+
+        <button
+          type="submit"
+          class="admin-login-btn"
+        >
+          Login to Admin →
+        </button>
+
+      </form>
+
+      <p class="admin-login-hint">
+        Hint: admin / shakespeare@123
+      </p>
+
+    </div>
+
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script>
+    document.getElementById('loginForm')
+      .addEventListener('submit', async e => {
+
+        e.preventDefault();
+
+        const errorDiv =
+          document.getElementById('errorMsg');
+
+        errorDiv.textContent = 'Logging in...';
+
+        try {
+
+          const res = await fetch(
+            '/api/admin/login',
+            {
+              method: 'POST',
+
+              headers: {
+                'Content-Type': 'application/json'
+              },
+
+              body: JSON.stringify({
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+              })
+            }
+          );
+
+          const data = await res.json();
+
+          if (data.success) {
+
+            localStorage.setItem(
+              'adminToken',
+              data.token
+            );
+
+            window.location.href = '/admin-academic.html';
+
+          } else {
+
+            errorDiv.textContent =
+              'Invalid credentials';
+
+          }
+
+        } catch (err) {
+
+          errorDiv.textContent =
+            'Server error: ' + err.message;
+
+        }
+      });
+  </script>
+
+</body>
+</html>

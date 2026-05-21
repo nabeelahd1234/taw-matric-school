@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules &amp; Regulations — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">📝 Rules &amp; Regulations</div>
+    <div class="topbar-meta">
+      <a href="/rules-regulations.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+let state = { rulesRegulations: { sections: [] } };
+
+document.getElementById('sidebarEl').innerHTML = buildSidebar('pages', 'rules-regulations');
+
+async function init() {
+  state.rulesRegulations = await apiGet('/api/data/rulesRegulations').catch(() => ({ sections: [] }));
+  if (!Array.isArray(state.rulesRegulations.sections)) state.rulesRegulations.sections = [];
+  render();
+}
+
+function render() {
+  const d        = state.rulesRegulations;
+  const sections = d.sections || [];
+
+  document.getElementById('mainContent').innerHTML = `
+    <div class="card">
+      <div class="card-title">📘 Rules &amp; Regulations</div>
+
+      <!-- Hero + Intro fields -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Hero Title</label>
+          <input id="rr-heroTitle" value="${esc(d.heroTitle || '')}">
+        </div>
+        <div class="form-group">
+          <label>Hero Subtitle</label>
+          <input id="rr-heroSubtitle" value="${esc(d.heroSubtitle || '')}">
+        </div>
+        <div class="form-group form-full">
+          <label>Introduction Title</label>
+          <input id="rr-introTitle" value="${esc(d.introduction?.title || '')}">
+        </div>
+        <div class="form-group form-full">
+          <label>Introduction Description</label>
+          <textarea id="rr-introDesc" rows="4">${esc(d.introduction?.description || '')}</textarea>
+        </div>
+      </div>
+
+      <hr style="margin:24px 0">
+
+      <!-- Rule Sections -->
+      <div id="rulesSections">
+        ${sections.map((sec, i) => `
+          <div style="background:var(--bg);border:1px solid var(--border);padding:18px;border-radius:var(--radius);margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h3 style="margin:0">Section ${i + 1}</h3>
+              <button class="btn btn-danger btn-sm" onclick="deleteRuleSection(${i})">🗑 Delete</button>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Title</label>
+                <input id="rr-title-${i}" value="${esc(sec.title || '')}">
+              </div>
+              <div class="form-group">
+                <label>Icon</label>
+                <input id="rr-icon-${i}" value="${esc(sec.icon || '')}" style="width:80px;font-size:20px;text-align:center;">
+              </div>
+              <div class="form-group form-full">
+                <label>Rules (One per line)</label>
+                <textarea id="rr-rules-${i}" rows="6">${esc((sec.rules || []).join('\n'))}</textarea>
+              </div>
+            </div>
+          </div>`).join('')}
+        ${sections.length === 0 ? `<div class="empty-state"><div class="empty-state-icon">📘</div><p>No rule sections yet. Click "Add Section" to start.</p></div>` : ''}
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:20px">
+        <button class="btn btn-outline" onclick="addRuleSection()">➕ Add Section</button>
+        <button class="btn btn-success" onclick="saveRulesRegulations()">💾 Save Rules</button>
+      </div>
+    </div>`;
+}
+
+window.addRuleSection = () => {
+  state.rulesRegulations.sections.push({ id: Date.now(), title: '', icon: '📘', rules: [] });
+  render();
+};
+
+window.deleteRuleSection = (index) => {
+  state.rulesRegulations.sections.splice(index, 1);
+  render();
+};
+
+window.saveRulesRegulations = async () => {
+  const sections = state.rulesRegulations.sections.map((sec, i) => ({
+    id:    sec.id || Date.now(),
+    title: document.getElementById(`rr-title-${i}`).value.trim(),
+    icon:  document.getElementById(`rr-icon-${i}`).value.trim(),
+    rules: document.getElementById(`rr-rules-${i}`).value.split('\n').map(r => r.trim()).filter(Boolean)
+  }));
+  const updated = {
+    heroTitle:    document.getElementById('rr-heroTitle').value.trim(),
+    heroSubtitle: document.getElementById('rr-heroSubtitle').value.trim(),
+    introduction: {
+      title:       document.getElementById('rr-introTitle').value.trim(),
+      description: document.getElementById('rr-introDesc').value.trim()
+    },
+    sections,
+    note: state.rulesRegulations.note || { title: 'Parent Cooperation', description: '' }
+  };
+  try {
+    await api('/api/data/rulesRegulations', { method: 'PUT', body: JSON.stringify(updated) });
+    state.rulesRegulations = updated;
+    toast('Rules & Regulations saved successfully.');
+    render();
+  } catch (err) {
+    toast('Save failed: ' + err.message, 'error');
+  }
+};
+
+init();
+</script>
+</body>
+</html>

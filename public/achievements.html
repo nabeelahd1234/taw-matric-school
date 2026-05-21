@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Achievements - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script>
+    fetch('/api/data/achievements')
+      .then(res => res.json())
+      .then(data => {
+        // Hero — falls back to defaults if not yet set in admin
+        const heroTag   = data.heroTag   || 'Our Pride';
+        const heroTitle = data.heroTitle || 'Achievements &amp; Awards';
+
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(heroTag, heroTitle)}
+          <div class="achievements-container">
+            <div class="achievements-grid">
+              ${(data.categories || []).map(cat => `
+                <div class="card achievement-card">
+                  <h3>${cat.icon ? `<span>${cat.icon}</span> ` : ''}${cat.title || ''}</h3>
+
+                  <ul class="achievement-list">
+                    ${(cat.items || []).map(item => `
+                      <li class="achievement-item">
+                        ✦ ${item}
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+</body>
+</html>

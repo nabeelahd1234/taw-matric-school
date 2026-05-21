@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fees Structure - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/fees')
+      .then(res => res.json())
+      .then(data => {
+  
+        const rows = data.map(f => `
+          <tr class="fees-table-row">
+  
+            <td class="fees-table-cell fees-class">
+              Class ${f.cls}
+            </td>
+  
+            <td class="fees-table-cell">
+              ₹${f.term.toLocaleString()}
+            </td>
+  
+            <td class="fees-table-cell">
+              ₹${f.annual.toLocaleString()}
+            </td>
+  
+            <td class="fees-table-cell">
+              ₹${f.transport.toLocaleString()}
+            </td>
+  
+            <td class="fees-table-cell fees-total">
+              ₹${f.total.toLocaleString()}
+            </td>
+  
+          </tr>
+        `).join('');
+  
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(
+            'Fee Details 2024-25',
+            'School Fees Structure'
+          )}
+  
+          <div class="fees-container">
+  
+            <div class="card fees-card">
+  
+              <table class="fees-table">
+  
+                <thead>
+  
+                  <tr class="fees-table-head-row">
+  
+                    <th class="fees-table-header">
+                      Class
+                    </th>
+  
+                    <th class="fees-table-header">
+                      Term Fee (×3)
+                    </th>
+  
+                    <th class="fees-table-header">
+                      Annual Fee
+                    </th>
+  
+                    <th class="fees-table-header">
+                      Transport
+                    </th>
+  
+                    <th class="fees-table-header">
+                      Grand Total
+                    </th>
+  
+                  </tr>
+  
+                </thead>
+  
+                <tbody>
+                  ${rows}
+                </tbody>
+  
+              </table>
+  
+            </div>
+  
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+  
+        document.getElementById('page-content').innerHTML =
+          School.renderError();
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+{
+  "home": {
+    "heroTitle": "Shakespeare Ideal Matriculation School",
+    "heroSubtitle": "Nurturing Young Minds with Knowledge, Values & Excellence since 2000",
+    "stats": [
+      {
+        "number": "25+",
+        "label": "Years of Excellence"
+      },
+      {
+        "number": "3500+",
+        "label": "Alumni Worldwide"
+      },
+      {
+        "number": "100%",
+        "label": "SSLC Pass Rate 2024"
+      },
+      {
+        "number": "48",
+        "label": "Qualified Faculty"
+      }
+    ],
+    "welcome": {
+      "title": "Shakespeare Ideal",
+      "content": "Shakespeare Ideal Matriculation School has been a beacon of quality education in our community for over two decades. We believe in nurturing every child's unique potential through a blend of rigorous academics, sports, arts, and moral education. Our dedicated faculty and modern infrastructure create an environment where students thrive academically and personally, emerging as confident, compassionate citizens ready for life's challenges."
+    },
+    "features": [
+      {
+        "icon": "📚",
+        "title": "Quality Education",
+        "description": "Comprehensive curriculum aligned with Tamil Nadu Matriculation Board standards with modern teaching methods."
+      },
+      {
+        "icon": "🏆",
+        "title": "Excellence in Sports",
+        "description": "State-level sports facilities and trained coaches to nurture champions in athletics, cricket, and more."
+      },
+      {
+        "icon": "🔬",
+        "title": "Modern Laboratories",
+        "description": "Well-equipped Physics, Chemistry, Biology, and Computer labs for hands-on learning experiences."
+      },
+      {
+        "icon": "🎭",
+        "title": "Cultural Activities",
+        "description": "Vibrant cultural programs, annual day celebrations, and arts competitions to nurture creative talent."
+      },
+      {
+        "icon": "🚌",
+        "title": "Safe Transportation",
+        "description": "GPS-enabled school buses covering major routes with trained drivers ensuring student safety."
+      },
+      {
+        "icon": "🌟",
+        "title": "Holistic Development",
+        "description": "NCC, Scouts, Yoga, and personality development programs to shape complete individuals."
+      }
+    ]
+  },
+  "about": {
+    "content": "Shakespeare Ideal Matriculation School was established in 2000 with the noble vision of providing high-quality education accessible to every child. Located in a serene, pollution-free environment, our school stands as a temple of learning where knowledge meets character. Affiliated to the Tamil Nadu Matriculation Board, we offer education from LKG to Class X with a strong emphasis on academic excellence, co-curricular development, and moral values. Our school is recognized as one of the leading Matric schools in the district. We believe every child is unique and gifted. Our faculty of 48 experienced teachers employs innovative teaching methodologies tailored to nurture each student's individual strengths, ensuring no child is left behind.",
+    "quickFacts": [
+      {
+        "label": "Students",
+        "value": ">1200"
+      },
+      {
+        "label": "Teachers",
+        "value": "48"
+      },
+      {
+        "label": "Classrooms",
+        "value": "36"
+      },
+      {
+        "label": "Labs",
+        "value": "5"
+      },
+      {
+        "label": "Library",
+        "value": "Yes"
+      },
+      {
+        "label": "Play Grounds",
+        "value": "3"
+      },
+      {
+        "label": "Buses",
+        "value": "8 Routes"
+      },
+      {
+        "label": "Pass Rate",
+        "value": "100% (2024)"
+      }
+    ],
+    "milestones": [
+      {
+        "year": "2000",
+        "title": "Foundation",
+        "description": "School founded with a vision to provide quality education to rural and semi-urban children."
+      },
+      {
+        "year": "2005",
+        "title": "First Batch",
+        "description": "First SSLC batch achieves 98% pass rate, establishing academic credibility."
+      },
+      {
+        "year": "2010",
+        "title": "Expansion",
+        "description": "New science block and computer lab added; strength reaches 800 students."
+      },
+      {
+        "year": "2015",
+        "title": "Sports Excellence",
+        "description": "State-level cricket and athletics teams formed; multiple district championships."
+      },
+      {
+        "year": "2020",
+        "title": "Silver Jubilee",
+        "description": "20 years of excellence; 3000+ alumni across India and abroad."
+      },
+      {
+        "year": "2024",
+        "title": "100% SSLC",
+        "description": "Historic 100% pass with 85% distinction in SSLC Board Examinations."
+      }
+    ],
+    "metaBadges": [
+      {
+        "icon": "📍",
+        "label": "Location",
+        "value": "Anna Nagar, Ambur – 635805"
+      },
+      {
+        "icon": "🏫",
+        "label": "Type",
+        "value": "Tamil Nadu Matric Board"
+      },
+      {
+        "icon": "📅",
+        "label": "Established",
+        "value": "Year 2000"
+      },
+      {
+        "icon": "👦",
+        "label": "Medium",
+        "value": "Tamil & English Medium"
+      }
+    ],
+    "heroTag": "Our Story",
+    "heroTitle": "About Our School",
+    "sectionHeading": "Shakespeare Ideal Matriculation School",
+    "timelineHeading": "Our Journey Through the Years"
+  },
+  "principal": {
+    "name": "Dr. Vijaya Lakshmi",
+    "qualification": "M.Sc., M.Ed., Ph.D.",
+    "title": "Principal",
+    "experience": "28 Years",
+    "specialization": "Child Psychology",
+    "message": "\"Education is not merely about acquiring knowledge; it is about cultivating wisdom, building character, and inspiring students to discover their highest potential.\"",
+    "bio": "Dr. Vijaya Lakshmi brings 28 years of rich experience in education management, curriculum development, and child psychology. She joined Shakespeare Ideal Matriculation School in 2012 and has since transformed it into one of the most sought-after schools in the region. Under her visionary leadership, the school achieved 100% SSLC pass results consecutively for the past 5 years. She is a strong advocate for student-centered learning, and has introduced several innovative programs including the \"Learning by Doing\" science curriculum and the \"Shakespeare Reads\" literacy drive. She has received the Best Principal Award from the State Government in 2018 and 2022, and was recognized by the National Council for Educational Research for her contributions to rural education.",
+    "heroTag": "Leadership",
+    "heroTitle": "About Our Principal",
+    "avatar": "👩‍🏫",
+    "messageTag": "A Message from the Principal",
+    "messageHeading": "Shaping Futures, Inspiring Lives",
+    "stats": [
+      {
+        "label": "Experience",
+        "value": "28 Years"
+      },
+      {
+        "label": "Qualification",
+        "value": "M.Sc., M.Ed., Ph.D."
+      },
+      {
+        "label": "Specialization",
+        "value": "Child Psychology"
+      },
+      {
+        "label": "Awards",
+        "value": "3 State Awards"
+      }
+    ],
+    "photo": "",
+    "awards": "3 State Awards"
+  },
+  "vision": {
+    "vision": "To be a centre of excellence that transforms young minds into thoughtful, compassionate leaders who contribute positively to society while achieving their personal best.",
+    "mission": "To provide holistic, child-centered education that nurtures intellectual curiosity, moral values, physical well-being, and creative expression — preparing every student for life's challenges and opportunities.",
+    "values": [
+      {
+        "icon": "🌟",
+        "title": "Excellence",
+        "description": "Pursuing the highest academic standards while making education joyful and meaningful for every learner."
+      },
+      {
+        "icon": "🤝",
+        "title": "Integrity",
+        "description": "Building honest, ethical individuals who lead with integrity and compassion in all walks of life."
+      },
+      {
+        "icon": "💡",
+        "title": "Innovation",
+        "description": "Embracing modern teaching methods and technology to prepare students for the 21st century."
+      },
+      {
+        "icon": "🌱",
+        "title": "Growth",
+        "description": "Fostering continuous growth — academic, physical, emotional, and spiritual — in every student."
+      },
+      {
+        "icon": "🤗",
+        "title": "Inclusivity",
+        "description": "Creating a safe, welcoming environment where every child feels valued, respected, and included."
+      },
+      {
+        "icon": "🌍",
+        "title": "Responsibility",
+        "description": "Nurturing responsible citizens who care for their community, nation, and the environment."
+      }
+    ],
+    "heroTag": "Our Purpose",
+    "heroTitle": "Vision & Mission",
+    "visionIcon": "🔭",
+    "missionIcon": "🎯",
+    "coreValuesSubtitle": "What We Stand For",
+    "coreValuesHeading": "Our Core Values"
+  },
+  "achievements": {
+    "categories": [
+      {
+        "title": "Academics",
+        "icon": "🎓",
+        "items": [
+          "100% SSLC Pass Rate — 2020, 2021, 2022, 2023, 2024",
+          "District Topper in Maths — 3 consecutive years",
+          "State Rank 5 in Science Olympiad 2023",
+          "Best School Award — District Education Dept 2022"
+        ]
+      },
+      {
+        "title": "Sports",
+        "icon": "🏆",
+        "items": [
+          "State Level Cricket Champions 2023",
+          "District Athletics Gold — 5 events in 2024",
+          "Inter-school Kabaddi Champions 2022",
+          "Yoga Championship — State Level Winners 2023"
+        ]
+      },
+      {
+        "title": "Cultural",
+        "icon": "🎭",
+        "items": [
+          "Best Drama Award — Zonals 2023",
+          "First Prize Folk Dance — District Level",
+          "Best Choir Award — Annual Competitions",
+          "Art Exhibition — State Selection 2024"
+        ]
+      },
+      {
+        "title": "Special Recognition",
+        "icon": "⭐",
+        "items": [
+          "Best Principal Award — State Govt 2022",
+          "ISO 9001:2015 Certified School",
+          "Green School Award — District Level",
+          "Best Infrastructure Award 2023"
+        ]
+      }
+    ],
+    "heroTag": "Our Pride",
+    "heroTitle": "Achievements &amp; Awards"
+  },
+  "syllabus": [
+    {
+      "id": 1,
+      "classes": "LKG",
+      "board": "TN State Board",
+      "subjects": "English, Tamil, Hindi, Urdu, Basic Maths, Drawing, EVS, Physical Education",
+      "extra": "Rhymes, Story Telling, Art & Craft, Dance, Action Songs"
+    },
+    {
+      "id": 2,
+      "classes": "UKG",
+      "board": "TN Matriculation Board",
+      "subjects": "Tamil, English, Mathematics, Science, Social Science, Computer Science",
+      "extra": "NCC, Scouts, Sports, Cultural Activities, Art & Craft"
+    },
+    {
+      "id": 3,
+      "classes": "VI – VIII",
+      "board": "TN Matriculation Board",
+      "subjects": "Tamil, English, Maths, Science, Social Science, Computer, Optional Language",
+      "extra": "Lab Practicals, Sports, Cultural, NCC, Career Awareness"
+    },
+    {
+      "id": 4,
+      "classes": "IX – X (SSLC)",
+      "board": "TN Matriculation Board",
+      "subjects": "Tamil, English, Maths, Science, Social Science, Computer, Optional Language",
+      "extra": "Board Exam Prep, Lab Practicals, Career Guidance, Personality Dev."
+    },
+    {
+      "classes": "1",
+      "board": "TN State Board",
+      "subjects": "English , Tamil",
+      "extra": "Rhymes",
+      "id": 1779034760308
+    }
+  ],
+  "timetable": {
+    "1": {
+      "days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "periods": [
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "1st Period"
+        },
+        {
+          "start": "10:00",
+          "end": "11:00",
+          "name": "2nd Period"
+        },
+        {
+          "start": "11:00",
+          "end": "00:00",
+          "name": "3rd Period"
+        },
+        {
+          "start": "12:00",
+          "end": "12:10",
+          "name": "Break"
+        },
+        {
+          "start": "12:10",
+          "end": "13:10",
+          "name": "4th Period"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "5th Period"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "Lunch"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "6th Period"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "7th Period"
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": "8th Period"
+        }
+      ],
+      "schedule": {
+        "0_0": "English",
+        "0_1": "English",
+        "0_2": "English",
+        "0_3": "English",
+        "0_4": "English",
+        "1_0": "Tamil",
+        "1_1": "Tamil",
+        "1_2": "Tamil",
+        "1_3": "Tamil",
+        "1_4": "Tamil",
+        "2_0": "Basic Maths",
+        "2_1": "Basic Maths",
+        "2_2": "Basic Maths",
+        "2_3": "Basic Maths",
+        "2_4": "Basic Maths",
+        "3_0": "Recess Break",
+        "3_1": "Recess Break",
+        "3_2": "Recess Break",
+        "3_3": "Recess Break",
+        "3_4": "Recess Break"
+      }
+    },
+    "2": {
+      "days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "11:00",
+          "name": ""
+        },
+        {
+          "start": "09:00",
+          "end": "10:00",
+          "name": ""
+        }
+      ],
+      "schedule": {
+        "0_0": "English",
+        "0_1": "Tamil",
+        "0_2": "Maths",
+        "0_3": "Basic Maths",
+        "0_4": "Drawing",
+        "1_0": "Tamil",
+        "1_1": "Tamil",
+        "1_2": "Tamil",
+        "1_3": "Tamil",
+        "1_4": "Tamil"
+      }
+    },
+    "days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "periods": [
+      "8:00 – 8:45",
+      "8:45 – 9:30",
+      "9:30 – 10:15",
+      "Break",
+      "10:30 – 11:15",
+      "11:15 – 12:00",
+      "Lunch",
+      "1:00 – 1:45",
+      "1:45 – 2:30"
+    ],
+    "schedule": {}
+  },
+  "gallery": [
+    {
+      "id": 1,
+      "title": "Annual Day 2024",
+      "filename": "default-gallery-1.jpg",
+      "cat": "Events"
+    },
+    {
+      "id": 2,
+      "title": "Sports Day Champions",
+      "filename": "default-gallery-2.jpg",
+      "cat": "Sports"
+    },
+    {
+      "id": 3,
+      "title": "Science Exhibition",
+      "filename": "default-gallery-3.jpg",
+      "cat": "Academics"
+    },
+    {
+      "id": 4,
+      "title": "Cultural Fiesta",
+      "filename": "default-gallery-4.jpg",
+      "cat": "Cultural"
+    },
+    {
+      "id": 5,
+      "title": "Classroom Learning",
+      "filename": "default-gallery-5.jpg",
+      "cat": "Academics"
+    },
+    {
+      "id": 6,
+      "title": "Prize Day Ceremony",
+      "filename": "default-gallery-6.jpg",
+      "cat": "Events"
+    }
+  ],
+  "admissions": {
+    "status": "closed",
+    "lastDate": "31st March 2025",
+    "contactPhone": "+91 98765 43210",
+    "processSteps": [
+      {
+        "step": 1,
+        "title": "Download Form",
+        "description": "Download or collect the admission form from the school office or this website."
+      },
+      {
+        "step": 2,
+        "title": "Fill & Submit",
+        "description": "Complete the form and submit with required documents to the school office."
+      },
+      {
+        "step": 3,
+        "title": "Entrance Test",
+        "description": "Students (Classes V and above) appear for a simple entrance assessment."
+      },
+      {
+        "step": 4,
+        "title": "Interview",
+        "description": "A brief interaction with the Principal and class teacher."
+      },
+      {
+        "step": 5,
+        "title": "Fee Payment",
+        "description": "Pay the admission and term fees to confirm your child's seat."
+      },
+      {
+        "step": 6,
+        "title": "Welcome!",
+        "description": "Receive the school uniform kit, books list, and begin the journey!"
+      }
+    ],
+    "documents": [
+      "Transfer Certificate (for Class II and above)",
+      "Birth Certificate / Aadhar Card",
+      "Passport size photographs (4 nos.)",
+      "Previous class Mark Sheet",
+      "Residence Proof",
+      "Caste Certificate (if applicable for concession)"
+    ]
+  },
+  "classes": [
+    {
+      "id": 1,
+      "name": "LKG",
+      "sections": [
+        "A"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "UKG",
+      "sections": [
+        "A"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "I",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "II",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "III",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "IV",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "V",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "VI",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "VII",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "VIII",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "IX",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "X",
+      "sections": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "id": 1779036822394,
+      "name": "V",
+      "sections": [
+        "C"
+      ]
+    },
+    {
+      "id": 1779124340233,
+      "name": "LKG",
+      "sections": [
+        "A"
+      ]
+    }
+  ],
+  "fees": [
+    {
+      "id": 1,
+      "cls": "LKG",
+      "term": 4500,
+      "annual": 2000,
+      "transport": 360,
+      "total": 15860
+    },
+    {
+      "id": 2,
+      "cls": "UKG",
+      "term": 4500,
+      "annual": 2000,
+      "transport": 3600,
+      "total": 18500
+    },
+    {
+      "id": 3,
+      "cls": "I",
+      "term": 5000,
+      "annual": 2500,
+      "transport": 3600,
+      "total": 20500
+    },
+    {
+      "id": 4,
+      "cls": "II",
+      "term": 5000,
+      "annual": 2500,
+      "transport": 3600,
+      "total": 20500
+    },
+    {
+      "id": 5,
+      "cls": "III",
+      "term": 5500,
+      "annual": 3000,
+      "transport": 3600,
+      "total": 22500
+    },
+    {
+      "id": 6,
+      "cls": "IV",
+      "term": 5500,
+      "annual": 3000,
+      "transport": 3600,
+      "total": 22500
+    },
+    {
+      "id": 7,
+      "cls": "V",
+      "term": 6000,
+      "annual": 3000,
+      "transport": 3600,
+      "total": 24000
+    },
+    {
+      "id": 8,
+      "cls": "VI",
+      "term": 6000,
+      "annual": 3500,
+      "transport": 3600,
+      "total": 24500
+    },
+    {
+      "id": 9,
+      "cls": "VII",
+      "term": 6500,
+      "annual": 3500,
+      "transport": 3600,
+      "total": 26500
+    },
+    {
+      "id": 10,
+      "cls": "VIII",
+      "term": 6500,
+      "annual": 3500,
+      "transport": 3600,
+      "total": 26500
+    },
+    {
+      "id": 11,
+      "cls": "IX",
+      "term": 7000,
+      "annual": 4000,
+      "transport": 3600,
+      "total": 28000
+    },
+    {
+      "id": 12,
+      "cls": "X",
+      "term": 7000,
+      "annual": 4000,
+      "transport": 3600,
+      "total": 28000
+    }
+  ],
+  "announcements": [
+    "🎓 Admissions Open for 2025-26 — Apply Now!",
+    "🏆 Our Students Scored 100% Pass in SSLC 2024!",
+    "📅 Sports Day — 15th December 2024",
+    "🎭 Annual Day — 20th January 2025",
+    "📢 Parent-Teacher Meeting — 8th December 2024"
+  ],
+  "contact": {
+    "address": "123, Shakespeare Road, Anna Nagar, Chennai – 600 040, Tamil Nadu",
+    "phone": "+91 98765 43210 / +91 44 2345 6789",
+    "email": "info@shakespeareschool.edu.in",
+    "officeHours": "Mon – Sat: 8:00 AM – 4:30 PM"
+  },
+  "students": [
+    {
+      "id": 1779037711814,
+      "name": "Trading Nabeel Ahmed",
+      "class": "LKG",
+      "rollNo": "",
+      "parentContact": "",
+      "photo": null
+    },
+    {
+      "id": 1779122137688,
+      "name": "Nabeel Ahmed",
+      "class": "I",
+      "rollNo": "111",
+      "parentContact": "959595",
+      "photo": null
+    }
+  ],
+  "teachers": [
+    {
+      "id": 1779037694274,
+      "name": "vasa",
+      "subject": "fgfgh",
+      "qualification": "dfhdfgh",
+      "experience": "dfg",
+      "photo": null
+    }
+  ],
+  "rulesRegulations": {
+    "heroTitle": "Student Guidelines",
+    "heroSubtitle": "Rules & Regulations",
+    "introduction": {
+      "title": "School Discipline & Student Conduct",
+      "description": "Students are expected to maintain discipline, respect school values, and actively contribute to a positive learning environment. These rules are designed to ensure safety, academic excellence, and personal growth for every student."
+    },
+    "sections": [
+      {
+        "id": 1,
+        "title": "Attendance & Punctuality",
+        "icon": "⏰",
+        "rules": [
+          "Students must arrive at school before the morning assembly.",
+          "A minimum attendance percentage must be maintained throughout the academic year.",
+          "Leave applications should be submitted in advance through parents or guardians.",
+          "Repeated late arrivals may lead to disciplinary action."
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Uniform & Appearance",
+        "icon": "👔",
+        "rules": [
+          "Students must wear the prescribed school uniform every day.",
+          "Shoes should be clean and polished regularly.",
+          "Fancy accessories, jewellery, and hairstyles are not permitted.",
+          "Identity cards must be carried inside the campus at all times."
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Classroom Discipline",
+        "icon": "📚",
+        "rules": [
+          "Students should maintain silence and discipline during class hours.",
+          "Homework and assignments must be completed on time.",
+          "Respect towards teachers and classmates is mandatory.",
+          "Damage to classroom property will result in penalties."
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Examination Rules",
+        "icon": "📝",
+        "rules": [
+          "Students must carry required stationery for examinations.",
+          "Any form of malpractice during exams is strictly prohibited.",
+          "Late entry into the examination hall may not be allowed.",
+          "Answer sheets must be submitted before leaving the hall."
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Campus Behaviour",
+        "icon": "🏫",
+        "rules": [
+          "Students should keep the school campus neat and clean.",
+          "Bullying, fighting, or disrespectful behaviour is not tolerated.",
+          "Mobile phones and prohibited gadgets are not allowed without permission.",
+          "Students should use school facilities responsibly."
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Transport & Safety",
+        "icon": "🚌",
+        "rules": [
+          "Students using school transport must follow bus safety instructions.",
+          "Standing or shouting inside school buses is prohibited.",
+          "Students should report safety concerns immediately to staff.",
+          "Parents must inform the school about transport changes in advance."
+        ]
+      }
+    ],
+    "note": {
+      "title": "Parent Cooperation",
+      "description": "Parents are requested to support the school administration in maintaining discipline and ensuring that students follow all school rules sincerely."
+    }
+  },
+  "heroSlides": [
+    {
+      "type": "image",
+      "image": "/uploads/1779205836033-521082222.jpeg",
+      "alt": "",
+      "caption": ""
+    }
+  ]
+}

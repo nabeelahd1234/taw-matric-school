@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Principal Message — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">👩‍💼 Principal Message</div>
+    <div class="topbar-meta">
+      <a href="/principal.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+let state = { principal: {} };
+
+document.getElementById('sidebarEl').innerHTML = buildSidebar('pages', 'principal');
+
+async function init() {
+  state.principal = await apiGet('/api/data/principal').catch(() => ({}));
+  render();
+}
+
+function render() {
+  const d     = state.principal || {};
+  const stats = d.stats || [
+    { label: 'Experience',     value: d.experience     || '28 Years' },
+    { label: 'Qualification',  value: d.qualification  || 'Ph.D. in Education' },
+    { label: 'Specialization', value: d.specialization || 'Child Psychology' },
+    { label: 'Awards',         value: d.awards         || '3 State Awards' }
+  ];
+
+  document.getElementById('mainContent').innerHTML = `
+  <style>
+    .pp-section { background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden; }
+    .pp-section-header { display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:var(--sidebar-bg,#f8fafc);border-bottom:1px solid var(--border); }
+    .pp-section-header-left { display:flex;align-items:center;gap:9px; }
+    .pp-section-icon { font-size:17px;line-height:1; }
+    .pp-section-title { font-size:13px;font-weight:700;color:var(--text);letter-spacing:.02em;text-transform:uppercase; }
+    .pp-section-hint { font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0; }
+    .pp-section-body { padding:18px; }
+    .pp-stat-row { display:grid;grid-template-columns:1fr 1fr 40px;gap:10px;align-items:center;padding:9px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;margin-bottom:8px; }
+    .pp-stat-row:last-child { margin-bottom:0; }
+    .pp-stat-row .form-group { margin-bottom:0; }
+    .pp-stat-row .form-group label { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block; }
+    .pp-stat-row .form-group input { padding:6px 10px;font-size:13px; }
+    .pp-del-btn { background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:5px 9px;font-size:14px;cursor:pointer;transition:background .15s;margin-top:16px; }
+    .pp-del-btn:hover { background:#fef2f2; }
+    .pp-col-heads { display:grid;grid-template-columns:1fr 1fr 40px;gap:10px;margin-bottom:8px;padding:0 2px; }
+    .pp-col-head { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em; }
+    .pp-empty { text-align:center;padding:16px;color:var(--muted);font-size:13px;font-style:italic; }
+    .pp-photo-preview { display:flex;align-items:center;gap:14px;padding:12px;background:#fff;border:1px solid var(--border);border-radius:8px; }
+    .pp-photo-thumb { width:72px;height:72px;border-radius:10px;object-fit:cover;border:2px solid var(--border); }
+    .pp-avatar-placeholder { width:72px;height:72px;border-radius:10px;background:var(--sidebar-bg,#f1f5f9);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:32px; }
+    .pp-save-bar { display:flex;gap:10px;padding:20px 0 4px;border-top:1px solid var(--border);margin-top:4px; }
+  </style>
+
+  <div class="card" style="padding-bottom:8px;">
+    <div class="card-title" style="margin-bottom:20px;">👩‍💼 Principal Page — Full Content Editor</div>
+
+    <!-- ① PAGE HERO -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">🎯</span>
+          <span class="pp-section-title">Page Hero</span>
+          <span class="pp-section-hint">— top banner of the Principal page</span>
+        </div>
+      </div>
+      <div class="pp-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Hero Tag <span style="font-weight:400;color:var(--muted)">(small label, e.g. "Leadership")</span></label>
+            <input id="pp-heroTag" type="text" value="${esc(d.heroTag || 'Leadership')}" placeholder="Leadership">
+          </div>
+          <div class="form-group">
+            <label>Hero Title <span style="font-weight:400;color:var(--muted)">(main h1)</span></label>
+            <input id="pp-heroTitle" type="text" value="${esc(d.heroTitle || 'About Our Principal')}" placeholder="About Our Principal">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② PROFILE CARD -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">👤</span>
+          <span class="pp-section-title">Profile Card</span>
+          <span class="pp-section-hint">— name, title/role, avatar emoji</span>
+        </div>
+      </div>
+      <div class="pp-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input id="pp-name" type="text" value="${esc(d.name || 'Dr. Meenakshi Sundaram')}" placeholder="Dr. Meenakshi Sundaram">
+          </div>
+          <div class="form-group">
+            <label>Title / Role</label>
+            <input id="pp-role" type="text" value="${esc(d.title || 'Principal')}" placeholder="Principal">
+          </div>
+          <div class="form-group">
+            <label>Qualification</label>
+            <input id="pp-qual" type="text" value="${esc(d.qualification || 'M.Sc., M.Ed., Ph.D.')}" placeholder="M.Sc., M.Ed., Ph.D.">
+          </div>
+          <div class="form-group">
+            <label>Avatar Emoji <span style="font-weight:400;color:var(--muted)">(used when no photo)</span></label>
+            <input id="pp-avatar" type="text" value="${esc(d.avatar || '👩‍🏫')}" placeholder="👩‍🏫" style="font-size:20px;width:80px;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ PROFILE PHOTO -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">🖼️</span>
+          <span class="pp-section-title">Profile Photo</span>
+          <span class="pp-section-hint">— optional photo (replaces the emoji avatar when uploaded)</span>
+        </div>
+      </div>
+      <div class="pp-section-body">
+        <div class="pp-photo-preview">
+          ${d.photo
+            ? `<img src="${d.photo}" class="pp-photo-thumb" id="pp-photo-preview-img">`
+            : `<div class="pp-avatar-placeholder" id="pp-photo-preview-img">${esc(d.avatar || '👩‍🏫')}</div>`
+          }
+          <div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:6px;">Upload New Photo</div>
+            <input type="file" id="pp-photo" accept="image/*" style="font-size:13px;">
+            <div style="font-size:11px;color:var(--muted);margin-top:5px;">JPEG or PNG recommended · max 2 MB</div>
+            ${d.photo ? `<button type="button" class="btn btn-danger btn-sm" style="margin-top:8px;font-size:11px;padding:4px 10px;" onclick="ppClearPhoto()">✕ Remove Photo</button>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ STATS ROWS -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">📊</span>
+          <span class="pp-section-title">Profile Stats</span>
+          <span class="pp-section-hint">— key facts shown in the profile card</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" id="pp-addStatBtn" style="font-size:12px;padding:5px 12px;">➕ Add Stat</button>
+      </div>
+      <div class="pp-section-body">
+        <div class="pp-col-heads">
+          <span class="pp-col-head">Label</span>
+          <span class="pp-col-head">Value</span>
+          <span></span>
+        </div>
+        <div id="pp-statsContainer">${stats.map(s => ppStatRow(s)).join('')}</div>
+        ${stats.length === 0 ? `<div class="pp-empty" id="pp-emptyStats">No stats yet. Click "Add Stat" to start.</div>` : ''}
+      </div>
+    </div>
+
+    <!-- ⑤ MESSAGE SECTION -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">💬</span>
+          <span class="pp-section-title">Principal's Message</span>
+          <span class="pp-section-hint">— tag label, heading, and the quote paragraph</span>
+        </div>
+      </div>
+      <div class="pp-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Message Tag</label>
+            <input id="pp-msgTag" type="text" value="${esc(d.messageTag || 'A Message from the Principal')}" placeholder="A Message from the Principal">
+          </div>
+          <div class="form-group">
+            <label>Message Heading</label>
+            <input id="pp-msgHeading" type="text" value="${esc(d.messageHeading || 'Shaping Futures, Inspiring Lives')}" placeholder="Shaping Futures, Inspiring Lives">
+          </div>
+          <div class="form-group form-full">
+            <label>Message / Quote</label>
+            <textarea id="pp-msg" rows="4">${esc(d.message || '')}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑥ BIO -->
+    <div class="pp-section">
+      <div class="pp-section-header">
+        <div class="pp-section-header-left">
+          <span class="pp-section-icon">📝</span>
+          <span class="pp-section-title">Biography</span>
+          <span class="pp-section-hint">— longer paragraph about the principal's background</span>
+        </div>
+      </div>
+      <div class="pp-section-body">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Bio / Background</label>
+          <textarea id="pp-bio" rows="6">${esc(d.bio || '')}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE BAR -->
+    <div class="pp-save-bar">
+      <button class="btn btn-success" id="pp-saveBtn">💾 Save All Principal Data</button>
+    </div>
+  </div>`;
+
+  document.getElementById('pp-addStatBtn').onclick = ppAddStat;
+  document.getElementById('pp-saveBtn').onclick     = savePrincipal;
+}
+
+function ppStatRow(s) {
+  return `<div class="pp-stat-row">
+    <div class="form-group"><input type="text" class="pp-stat-label" value="${esc(s.label||'')}" placeholder="e.g. Experience"></div>
+    <div class="form-group"><input type="text" class="pp-stat-value" value="${esc(s.value||'')}" placeholder="e.g. 28 Years"></div>
+    <button type="button" class="pp-del-btn" onclick="ppRemoveStat(this)" title="Remove">✕</button>
+  </div>`;
+}
+
+window.ppAddStat = function() {
+  document.getElementById('pp-statsContainer').insertAdjacentHTML('beforeend', ppStatRow({}));
+  const empty = document.getElementById('pp-emptyStats');
+  if (empty) empty.style.display = 'none';
+};
+window.ppRemoveStat = btn => btn.closest('.pp-stat-row').remove();
+window.ppClearPhoto = function() {
+  state.principal.photo = '';
+  render();
+};
+
+window.savePrincipal = async () => {
+  const photoFile = document.getElementById('pp-photo')?.files[0];
+  let photo = state.principal.photo || '';
+  if (photoFile) {
+    const fd = new FormData();
+    fd.append('photo', photoFile);
+    fd.append('type', 'principal');
+    const r = await api('/api/upload/principal', { method: 'POST', body: fd });
+    photo = r.photo;
+  }
+
+  const stats = [...document.querySelectorAll('#pp-statsContainer .pp-stat-row')].map(row => ({
+    label: row.querySelector('.pp-stat-label')?.value.trim() || '',
+    value: row.querySelector('.pp-stat-value')?.value.trim() || ''
+  })).filter(s => s.label || s.value);
+
+  const updated = {
+    ...state.principal,
+    heroTag:        document.getElementById('pp-heroTag')?.value.trim()     || '',
+    heroTitle:      document.getElementById('pp-heroTitle')?.value.trim()   || '',
+    name:           document.getElementById('pp-name')?.value.trim()        || '',
+    title:          document.getElementById('pp-role')?.value.trim()        || '',
+    qualification:  document.getElementById('pp-qual')?.value.trim()        || '',
+    avatar:         document.getElementById('pp-avatar')?.value.trim()      || '👩‍🏫',
+    messageTag:     document.getElementById('pp-msgTag')?.value.trim()      || '',
+    messageHeading: document.getElementById('pp-msgHeading')?.value.trim()  || '',
+    message:        document.getElementById('pp-msg')?.value.trim()         || '',
+    bio:            document.getElementById('pp-bio')?.value.trim()         || '',
+    stats, photo
+  };
+  // keep legacy flat fields in sync
+  updated.experience     = stats.find(s => s.label.toLowerCase().includes('exp'))?.value   || updated.experience     || '';
+  updated.specialization = stats.find(s => s.label.toLowerCase().includes('spec'))?.value  || updated.specialization || '';
+  updated.awards         = stats.find(s => s.label.toLowerCase().includes('award'))?.value || updated.awards         || '';
+
+  try {
+    await api('/api/data/principal', { method: 'PUT', body: JSON.stringify(updated) });
+    state.principal = updated;
+    toast('✅ Principal page saved successfully.');
+    render();
+  } catch (err) {
+    toast('❌ Save failed: ' + err.message, 'error');
+  }
+};
+
+init();
+</script>
+</body>
+</html>

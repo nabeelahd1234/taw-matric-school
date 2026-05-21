@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/data/contact')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero('Get in Touch', 'Contact Us')}
+  
+          <div class="contact-container">
+  
+            <div class="contact-grid">
+  
+              <div>
+                <h3>Find Us</h3>
+  
+                ${[
+                  ['📍', 'Address',      data.address      || '123, Shakespeare Road, Anna Nagar, Chennai – 600 040'],
+                  ['📞', 'Phone',        data.phone        || '+91 98765 43210'],
+                  ['✉️', 'Email',        data.email        || 'info@shakespeareschool.edu.in'],
+                  ['🕐', 'Office Hours', data.officeHours  || 'Mon – Sat: 8:00 AM – 4:30 PM']
+                ].map(([icon, label, value]) => `
+                  <div class="contact-info-item">
+  
+                    <div class="contact-info-icon">
+                      ${icon}
+                    </div>
+  
+                    <div>
+                      <strong>${label}</strong>
+                      <br>
+                      ${value}
+                    </div>
+  
+                  </div>
+                `).join('')}
+  
+              </div>
+  
+              <div class="card">
+  
+                <h3>Send Us a Message</h3>
+  
+                <form id="contactForm">
+  
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Name"
+                    required
+                    class="contact-form-input"
+                  >
+  
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Email"
+                    required
+                    class="contact-form-input"
+                  >
+  
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Phone"
+                    class="contact-form-input"
+                  >
+  
+                  <textarea
+                    id="msg"
+                    placeholder="Message"
+                    rows="4"
+                    required
+                    class="contact-form-textarea"
+                  ></textarea>
+  
+                  <button
+                    type="submit"
+                    class="btn btn-primary contact-submit-btn"
+                  >
+                    Send Message →
+                  </button>
+  
+                </form>
+  
+                <div id="formStatus" class="form-status"></div>
+  
+              </div>
+  
+            </div>
+          </div>
+        `;
+  
+        // Wire up form after it's in the DOM
+        document.getElementById('contactForm').addEventListener('submit', async e => {
+          e.preventDefault();
+  
+          const statusDiv = document.getElementById('formStatus');
+  
+          try {
+            const res = await fetch('/api/contact', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                message: document.getElementById('msg').value
+              })
+            });
+  
+            if (res.ok) {
+              statusDiv.innerHTML = `
+                <p class="form-success">
+                  Message sent successfully! We will contact you soon.
+                </p>
+              `;
+  
+              e.target.reset();
+  
+            } else {
+              statusDiv.innerHTML = `
+                <p class="form-error">
+                  Failed to send. Please try again later.
+                </p>
+              `;
+            }
+  
+          } catch {
+            statusDiv.innerHTML = `
+              <p class="form-error">
+                Server error. Please try again.
+              </p>
+            `;
+          }
+        });
+      })
+      .catch(err => {
+        console.error(err);
+  
+        document.getElementById('page-content').innerHTML =
+          School.renderError('Failed to load contact information.');
+      });
+  </script>
+</body>
+</html>

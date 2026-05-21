@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    /* extra inline style if needed */
+    .class-filter-bar {
+      margin-bottom: 20px;
+    }
+    .inline-photo {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 50%;
+      background: #f1f5f9;
+    }
+    .photo-upload-inline {
+      display: inline-block;
+      cursor: pointer;
+      font-size: 24px;
+    }
+    td input, td select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<!-- Main -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Students</div>
+    <div class="topbar-meta">
+      <a href="/index.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = { classes: [], students: [] };
+let selectedClass = '';
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.getElementById('sidebarEl').innerHTML = buildSidebar('people', 'students');
+
+async function init() {
+  const [classesRes, studentsRes] = await Promise.all([
+    apiGet('/api/classes').catch(() => []),
+    apiGet('/api/students').catch(() => []),
+  ]);
+  state.classes = classesRes;
+  state.students = studentsRes;
+  
+  // set default selected class (first unique class name)
+  const uniqueClassNames = [...new Set(state.classes.map(c => c.name))];
+  selectedClass = uniqueClassNames[0] || '';
+  
+  renderStudents(document.getElementById('mainContent'));
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function uniqueClasses() {
+  const seen = new Set();
+  return state.classes.filter(c => {
+    if (seen.has(c.name)) return false;
+    seen.add(c.name);
+    return true;
+  });
+}
+
+function classOptions(selectedVal = '') {
+  return uniqueClasses()
+    .map(c => `<option value="${c.name}" ${selectedVal === c.name ? 'selected' : ''}>${c.name}</option>`)
+    .join('');
+}
+
+function studentsInClass(className) {
+  return state.students.filter(s => s.class === className);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RENDER STUDENTS (inline editable rows)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderStudents(container) {
+  const classesList = uniqueClasses();
+  const filteredStudents = studentsInClass(selectedClass);
+  const totalCount = state.students.length;
+
+  container.innerHTML = `
+    <!-- Class Filter Bar -->
+    <div class="class-filter-bar">
+      <label>📚 Select Class</label>
+      <select class="class-filter-select" id="classFilterSelect" onchange="onClassChange(this.value)">
+        ${classesList.map(cl => `<option value="${cl.name}" ${cl.name === selectedClass ? 'selected' : ''}>${cl.name}</option>`).join('')}
+      </select>
+      <span class="class-student-count">
+        <strong id="filteredCount">${filteredStudents.length}</strong> student${filteredStudents.length !== 1 ? 's' : ''} in this class
+        &nbsp;·&nbsp; ${totalCount} total
+      </span>
+      <!-- no separate Add button – new row is at bottom of table -->
+    </div>
+
+    <!-- Student Table (inline edit) -->
+    <div class="card">
+      <div class="card-title">
+        👨‍🎓 Students — Class <span id="classLabel">${selectedClass || '—'}</span>
+        <span class="badge badge-blue" id="classCountBadge">${filteredStudents.length}</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:56px">Photo</th>
+              <th>Full Name</th>
+              <th>Class</th>
+              <th style="width:90px">Roll No</th>
+              <th>Parent Contact</th>
+              <th style="width:160px; text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="stuTbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+
+  refreshStudentTable();
+}
+
+function refreshStudentTable() {
+  const tbody = document.getElementById('stuTbody');
+  if (!tbody) return;
+
+  const inClass = studentsInClass(selectedClass);
+
+  if (inClass.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6">
+          <div class="empty-class">
+            <div class="empty-class-icon">👨‍🎓</div>
+            <p>No students in <strong>Class ${selectedClass}</strong> yet.</p>
+            <p style="margin-top:6px">Add a student using the form below 👇</p>
+          </div>
+        </td>
+      </tr>`;
+  } else {
+    tbody.innerHTML = inClass.map(s => `
+      <tr id="stu-row-${s.id}">
+        <td>
+          <img src="${s.photo || '/images/default-avatar.png'}"
+               class="inline-photo"
+               onerror="this.onerror=null;this.src='/images/default-avatar.png'">
+        </td>
+        <td><input type="text" id="name-${s.id}" value="${esc(s.name)}" placeholder="Full name"></td>
+        <td>
+          <select id="class-${s.id}">
+            ${classOptions(s.class)}
+          </select>
+        </td>
+        <td><input type="text" id="roll-${s.id}" value="${esc(s.rollNo || '')}" placeholder="Roll No"></td>
+        <td><input type="text" id="contact-${s.id}" value="${esc(s.parentContact || '')}" placeholder="Parent contact"></td>
+        <td style="text-align:right">
+          <div class="row-actions">
+            <button class="btn btn-success btn-sm" onclick="saveStudent(${s.id})">💾 Save</button>
+            <button class="btn btn-danger btn-sm"  onclick="deleteStudent(${s.id})">🗑 Delete</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── Add new student row (always at bottom) ──
+  const addRow = `
+    <tr style="background:#f8fafc">
+      <td>
+        <label class="photo-upload-inline" title="Upload photo">
+          📷
+          <input type="file" id="newStuPhoto" accept="image/*" style="display:none" onchange="previewNewPhoto(this)">
+        </label>
+        <img id="newPhotoPreview" src="/images/default-avatar.png" class="inline-photo" style="display:none; margin-left:6px">
+      </td>
+      <td><input type="text" id="newName" placeholder="Full name *"></td>
+      <td>
+        <select id="newClass">
+          ${classOptions(selectedClass)}
+        </select>
+      </td>
+      <td><input type="text" id="newRoll" placeholder="Roll No"></td>
+      <td><input type="text" id="newContact" placeholder="Parent contact"></td>
+      <td style="text-align:right">
+        <button class="btn btn-primary btn-sm" onclick="addStudent()">➕ Add Student</button>
+      </td>
+    </tr>`;
+  tbody.insertAdjacentHTML('beforeend', addRow);
+}
+
+// ── Preview new photo (optional) ──
+window.previewNewPhoto = function(input) {
+  if (input.files && input.files[0]) {
+    const preview = document.getElementById('newPhotoPreview');
+    preview.src = URL.createObjectURL(input.files[0]);
+    preview.style.display = 'inline-block';
+  }
+};
+
+// ── Save existing student (inline) ──
+window.saveStudent = async function(id) {
+  const name = document.getElementById(`name-${id}`).value.trim();
+  if (!name) return toast('Student name is required.', 'error');
+
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('class', document.getElementById(`class-${id}`).value);
+  fd.append('rollNo', document.getElementById(`roll-${id}`).value.trim());
+  fd.append('parentContact', document.getElementById(`contact-${id}`).value.trim());
+  fd.append('type', 'student');
+  
+  // optional: add photo upload for existing? Teachers page does not support inline photo edit for existing.
+  // We'll keep photo unchanged for now, but you could add a file input per row if needed.
+  // To keep simple and match teacher behaviour, we skip photo update on save.
+  
+  const saveBtn = event.target;
+  const originalText = saveBtn.innerText;
+  saveBtn.disabled = true;
+  saveBtn.innerText = 'Saving...';
+  
+  try {
+    await api(`/api/students/${id}`, { method: 'PUT', body: fd });
+    state.students = await apiGet('/api/students');
+    toast('Student saved.');
+    refreshStudentTable();
+    updateClassCounters();
+  } catch (err) {
+    toast('Save failed.', 'error');
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerText = originalText;
+  }
+};
+
+// ── Delete student ──
+window.deleteStudent = async function(id) {
+  const student = state.students.find(s => s.id === id);
+  if (!confirm(`Delete student "${student?.name}"? This cannot be undone.`)) return;
+  await api(`/api/students/${id}`, { method: 'DELETE' });
+  state.students = await apiGet('/api/students');
+  toast('Student deleted.');
+  refreshStudentTable();
+  updateClassCounters();
+};
+
+// ── Add new student (from bottom row) ──
+window.addStudent = async function() {
+  const name = document.getElementById('newName').value.trim();
+  if (!name) return toast('Student name is required.', 'error');
+  
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('class', document.getElementById('newClass').value);
+  fd.append('rollNo', document.getElementById('newRoll').value.trim());
+  fd.append('parentContact', document.getElementById('newContact').value.trim());
+  fd.append('type', 'student');
+  
+  const photoFile = document.getElementById('newStuPhoto').files[0];
+  if (photoFile) fd.append('photo', photoFile);
+  
+  const addBtn = event.target;
+  addBtn.disabled = true;
+  addBtn.innerText = 'Adding...';
+  
+  try {
+    await api('/api/students', { method: 'POST', body: fd });
+    state.students = await apiGet('/api/students');
+    toast('Student added.');
+    // reset new row fields
+    document.getElementById('newName').value = '';
+    document.getElementById('newRoll').value = '';
+    document.getElementById('newContact').value = '';
+    document.getElementById('newStuPhoto').value = '';
+    const preview = document.getElementById('newPhotoPreview');
+    if (preview) {
+      preview.src = '/images/default-avatar.png';
+      preview.style.display = 'none';
+    }
+    refreshStudentTable();
+    updateClassCounters();
+  } catch (err) {
+    toast('Add failed.', 'error');
+  } finally {
+    addBtn.disabled = false;
+    addBtn.innerText = '➕ Add Student';
+  }
+};
+
+// ── Class filter change ──
+window.onClassChange = function(value) {
+  selectedClass = value;
+  updateClassCounters();
+  refreshStudentTable();  // re‑render table for the new class
+};
+
+function updateClassCounters() {
+  const inClass = studentsInClass(selectedClass);
+  const label = document.getElementById('classLabel');
+  const badge = document.getElementById('classCountBadge');
+  const countSpan = document.getElementById('filteredCount');
+  if (label) label.textContent = selectedClass || '—';
+  if (badge) badge.textContent = inClass.length;
+  if (countSpan) countSpan.innerHTML = `<strong>${inClass.length}</strong>`;
+}
+
+// ── Start ──────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>x

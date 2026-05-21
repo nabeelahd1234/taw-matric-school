@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision &amp; Mission — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">🎯 Vision &amp; Mission</div>
+    <div class="topbar-meta">
+      <a href="/vision.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+let state = { vision: {} };
+
+document.getElementById('sidebarEl').innerHTML = buildSidebar('pages', 'vision');
+
+async function init() {
+  state.vision = await apiGet('/api/data/vision').catch(() => ({}));
+  render();
+}
+
+function render() {
+  const d      = state.vision || {};
+  const values = d.values || [];
+
+  document.getElementById('mainContent').innerHTML = `
+  <style>
+    .vm-section { background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden; }
+    .vm-section-header { display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:var(--sidebar-bg,#f8fafc);border-bottom:1px solid var(--border); }
+    .vm-section-header-left { display:flex;align-items:center;gap:9px; }
+    .vm-section-icon { font-size:17px;line-height:1; }
+    .vm-section-title { font-size:13px;font-weight:700;color:var(--text);letter-spacing:.02em;text-transform:uppercase; }
+    .vm-section-hint { font-size:11px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0; }
+    .vm-section-body { padding:18px; }
+    .vm-value-row { background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 14px 10px;margin-bottom:10px;position:relative; }
+    .vm-value-row:last-child { margin-bottom:0; }
+    .vm-value-row-grid { display:grid;grid-template-columns:64px 1fr 2fr 36px;gap:10px;align-items:start; }
+    .vm-value-row .form-group { margin-bottom:0; }
+    .vm-value-row .form-group label { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block; }
+    .vm-value-row .form-group input,.vm-value-row .form-group textarea { padding:6px 10px;font-size:13px; }
+    .vm-icon-input { text-align:center;font-size:20px !important;padding:4px !important; }
+    .vm-del-btn { background:none;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:5px 8px;font-size:13px;cursor:pointer;transition:background .15s;margin-top:16px; }
+    .vm-del-btn:hover { background:#fef2f2; }
+    .vm-col-heads { display:grid;grid-template-columns:64px 1fr 2fr 36px;gap:10px;margin-bottom:8px;padding:0 2px; }
+    .vm-col-head { font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em; }
+    .vm-empty { text-align:center;padding:18px;color:var(--muted);font-size:13px;font-style:italic; }
+    .vm-save-bar { display:flex;gap:10px;padding:20px 0 4px;border-top:1px solid var(--border);margin-top:4px; }
+  </style>
+
+  <div class="card" style="padding-bottom:8px;">
+    <div class="card-title" style="margin-bottom:20px;">🔭 Vision &amp; Mission — Full Content Editor</div>
+
+    <!-- ① PAGE HERO -->
+    <div class="vm-section">
+      <div class="vm-section-header">
+        <div class="vm-section-header-left">
+          <span class="vm-section-icon">🎯</span>
+          <span class="vm-section-title">Page Hero</span>
+          <span class="vm-section-hint">— top banner of the Vision &amp; Mission page</span>
+        </div>
+      </div>
+      <div class="vm-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Hero Tag <span style="font-weight:400;color:var(--muted)">(small label, e.g. "Our Purpose")</span></label>
+            <input id="vm-heroTag" type="text" value="${esc(d.heroTag || 'Our Purpose')}" placeholder="Our Purpose">
+          </div>
+          <div class="form-group">
+            <label>Hero Title <span style="font-weight:400;color:var(--muted)">(main h1)</span></label>
+            <input id="vm-heroTitle" type="text" value="${esc(d.heroTitle || 'Vision & Mission')}" placeholder="Vision &amp; Mission">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② VISION CARD -->
+    <div class="vm-section">
+      <div class="vm-section-header">
+        <div class="vm-section-header-left">
+          <span class="vm-section-icon">🔭</span>
+          <span class="vm-section-title">Vision Card</span>
+          <span class="vm-section-hint">— left card with icon and vision statement</span>
+        </div>
+      </div>
+      <div class="vm-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group" style="max-width:120px;">
+            <label>Card Icon <span style="font-weight:400;color:var(--muted)">(emoji)</span></label>
+            <input id="vm-visionIcon" type="text" value="${esc(d.visionIcon || '🔭')}" placeholder="🔭" style="text-align:center;font-size:22px;padding:5px;">
+          </div>
+          <div class="form-group form-full">
+            <label>Vision Statement</label>
+            <textarea id="vm-vision" rows="4">${esc(d.vision || '')}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ MISSION CARD -->
+    <div class="vm-section">
+      <div class="vm-section-header">
+        <div class="vm-section-header-left">
+          <span class="vm-section-icon">🎯</span>
+          <span class="vm-section-title">Mission Card</span>
+          <span class="vm-section-hint">— right card with icon and mission statement</span>
+        </div>
+      </div>
+      <div class="vm-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group" style="max-width:120px;">
+            <label>Card Icon <span style="font-weight:400;color:var(--muted)">(emoji)</span></label>
+            <input id="vm-missionIcon" type="text" value="${esc(d.missionIcon || '🎯')}" placeholder="🎯" style="text-align:center;font-size:22px;padding:5px;">
+          </div>
+          <div class="form-group form-full">
+            <label>Mission Statement</label>
+            <textarea id="vm-mission" rows="4">${esc(d.mission || '')}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ CORE VALUES SECTION HEADER -->
+    <div class="vm-section">
+      <div class="vm-section-header">
+        <div class="vm-section-header-left">
+          <span class="vm-section-icon">✨</span>
+          <span class="vm-section-title">Core Values — Section Header</span>
+          <span class="vm-section-hint">— subtitle and heading above the values grid</span>
+        </div>
+      </div>
+      <div class="vm-section-body">
+        <div class="form-grid" style="gap:12px;">
+          <div class="form-group">
+            <label>Section Subtitle <span style="font-weight:400;color:var(--muted)">(small text above heading)</span></label>
+            <input id="vm-valuesSubtitle" type="text" value="${esc(d.coreValuesSubtitle || 'What We Stand For')}" placeholder="What We Stand For">
+          </div>
+          <div class="form-group">
+            <label>Section Heading <span style="font-weight:400;color:var(--muted)">(h2)</span></label>
+            <input id="vm-valuesHeading" type="text" value="${esc(d.coreValuesHeading || 'Our Core Values')}" placeholder="Our Core Values">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ CORE VALUES CARDS -->
+    <div class="vm-section">
+      <div class="vm-section-header">
+        <div class="vm-section-header-left">
+          <span class="vm-section-icon">🃏</span>
+          <span class="vm-section-title">Core Value Cards</span>
+          <span class="vm-section-hint">— each card shown in the values grid (icon · title · description)</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" id="vm-addValueBtn" style="font-size:12px;padding:5px 12px;">➕ Add Value</button>
+      </div>
+      <div class="vm-section-body">
+        <div class="vm-col-heads">
+          <span class="vm-col-head">Icon</span>
+          <span class="vm-col-head">Title</span>
+          <span class="vm-col-head">Description</span>
+          <span></span>
+        </div>
+        <div id="vm-valuesContainer">${values.map(v => vmValueRow(v)).join('')}</div>
+        ${values.length === 0 ? `<div class="vm-empty" id="vm-emptyValues">No core values yet. Click "Add Value" to start.</div>` : ''}
+      </div>
+    </div>
+
+    <!-- SAVE BAR -->
+    <div class="vm-save-bar">
+      <button class="btn btn-success" id="vm-saveBtn">💾 Save All Vision &amp; Mission Data</button>
+    </div>
+  </div>`;
+
+  document.getElementById('vm-addValueBtn').onclick = vmAddValue;
+  document.getElementById('vm-saveBtn').onclick      = saveVision;
+}
+
+function vmValueRow(v) {
+  return `<div class="vm-value-row">
+    <div class="vm-value-row-grid">
+      <div class="form-group"><input type="text" class="vm-val-icon vm-icon-input" value="${esc(v.icon||'')}" placeholder="💡"></div>
+      <div class="form-group"><input type="text" class="vm-val-title" value="${esc(v.title||'')}" placeholder="e.g. Integrity"></div>
+      <div class="form-group"><textarea class="vm-val-desc" rows="2" placeholder="Brief description…">${esc(v.description||'')}</textarea></div>
+      <button type="button" class="vm-del-btn" onclick="vmRemoveValue(this)" title="Remove">✕</button>
+    </div>
+  </div>`;
+}
+
+window.vmAddValue = function() {
+  document.getElementById('vm-valuesContainer').insertAdjacentHTML('beforeend', vmValueRow({}));
+  const empty = document.getElementById('vm-emptyValues');
+  if (empty) empty.style.display = 'none';
+};
+window.vmRemoveValue = btn => btn.closest('.vm-value-row').remove();
+
+window.saveVision = async () => {
+  const values = [...document.querySelectorAll('#vm-valuesContainer .vm-value-row')].map(row => ({
+    icon:        row.querySelector('.vm-val-icon')?.value.trim()  || '',
+    title:       row.querySelector('.vm-val-title')?.value.trim() || '',
+    description: row.querySelector('.vm-val-desc')?.value.trim()  || ''
+  })).filter(v => v.title || v.description);
+
+  const updated = {
+    ...state.vision,
+    heroTag:            document.getElementById('vm-heroTag')?.value.trim()        || '',
+    heroTitle:          document.getElementById('vm-heroTitle')?.value.trim()      || '',
+    visionIcon:         document.getElementById('vm-visionIcon')?.value.trim()     || '🔭',
+    vision:             document.getElementById('vm-vision')?.value.trim()         || '',
+    missionIcon:        document.getElementById('vm-missionIcon')?.value.trim()    || '🎯',
+    mission:            document.getElementById('vm-mission')?.value.trim()        || '',
+    coreValuesSubtitle: document.getElementById('vm-valuesSubtitle')?.value.trim() || '',
+    coreValuesHeading:  document.getElementById('vm-valuesHeading')?.value.trim()  || '',
+    values
+  };
+  try {
+    await api('/api/data/vision', { method: 'PUT', body: JSON.stringify(updated) });
+    state.vision = updated;
+    toast('✅ Vision & Mission saved successfully.');
+    render();
+  } catch (err) {
+    toast('❌ Save failed: ' + err.message, 'error');
+  }
+};
+
+init();
+</script>
+</body>
+</html>

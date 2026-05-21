@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Gallery</div>
+    <div class="topbar-meta">
+      <a href="/index.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = { gallery: [] };
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+document.getElementById('sidebarEl').innerHTML = buildSidebar('people', 'gallery');
+
+async function init() {
+  state.gallery = await apiGet('/api/gallery').catch(() => []);
+  renderGallery(document.getElementById('mainContent'));
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GALLERY
+// ══════════════════════════════════════════════════════════════════════════════
+
+function renderGallery(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">🖼️ Add Media</div>
+      <form id="galleryAddForm" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Title</label>
+            <input name="title" type="text" placeholder="e.g. Science Exhibition 2025" required>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select name="cat">
+              <option value="Events">Events</option>
+              <option value="Sports">Sports</option>
+              <option value="Academics">Academics</option>
+              <option value="Cultural">Cultural</option>
+            </select>
+          </div>
+          <div class="form-group form-full">
+            <label>Image File</label>
+            <input name="image" type="file" accept="image/*" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">🖼️ Upload &amp; Add</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        📂 Gallery Items
+        <span class="badge badge-blue" id="galleryCountBadge">${state.gallery.length}</span>
+      </div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </div>`;
+
+  refreshGalleryGrid();
+
+  document.getElementById('galleryAddForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    fd.append('type', 'gallery');
+    await api('/api/gallery', { method: 'POST', body: fd });
+    state.gallery = await apiGet('/api/gallery');
+    e.target.reset();
+    toast('Image uploaded.');
+    refreshGalleryGrid();
+    const badge = document.getElementById('galleryCountBadge');
+    if (badge) badge.textContent = state.gallery.length;
+  });
+}
+
+function refreshGalleryGrid() {
+  const grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+  if (state.gallery.length === 0) {
+    grid.innerHTML = emptyState('No media uploaded yet.');
+    return;
+  }
+  grid.innerHTML = state.gallery.map(g => `
+    <div class="gallery-card" id="gc-${g.id}">
+      <img src="${g.filename}" onerror="this.style.background='#edf2f7'">
+      <div class="gallery-card-body">
+        <span class="badge badge-blue">${esc(g.cat)}</span>
+        <div class="gallery-card-title">${esc(g.title)}</div>
+        <button class="btn btn-danger btn-sm" style="width:100%;margin-top:6px"
+                onclick="deleteGallery(${g.id})">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+window.deleteGallery = async (id) => {
+  if (!confirm('Delete this image?')) return;
+  await api(`/api/gallery/${id}`, { method: 'DELETE' });
+  state.gallery = await apiGet('/api/gallery');
+  toast('Image deleted.');
+  refreshGalleryGrid();
+  const badge = document.getElementById('galleryCountBadge');
+  if (badge) badge.textContent = state.gallery.length;
+};
+
+// ── Start ──────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

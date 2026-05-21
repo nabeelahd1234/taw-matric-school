@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    /* ── Slide list ── */
+    .slide-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+
+    .slide-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: box-shadow 0.15s;
+    }
+    .slide-row:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+
+    /* thumbnail or icon */
+    .slide-thumb {
+      width: 90px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      background: #e2e8f0;
+    }
+    .slide-thumb-placeholder {
+      width: 90px;
+      height: 60px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .slide-info { flex: 1; min-width: 0; }
+    .slide-info-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--navy);
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slide-info-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .slide-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+    .slide-badge-text  { background: #dbeafe; color: #1d4ed8; }
+    .slide-badge-image { background: #dcfce7; color: #15803d; }
+
+    .slide-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    /* ── Add-slide form ── */
+    .type-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      width: fit-content;
+      margin-bottom: 20px;
+    }
+    .type-toggle-btn {
+      padding: 8px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+    .type-toggle-btn.active {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    /* image preview */
+    .img-preview-wrap { position: relative; width: fit-content; margin-bottom: 12px; }
+    .img-preview {
+      width: 240px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      display: block;
+    }
+    .img-preview-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      border-radius: 8px;
+      border: 2px dashed var(--border);
+      cursor: pointer;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .img-preview-label span { font-size: 28px; }
+
+    /* slide number badge */
+    .slide-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* empty state */
+    .slides-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      background: #f8fafc;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+    }
+    .slides-empty-icon { font-size: 36px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">🏠 Home Page</div>
+    <div class="topbar-meta">
+      <a href="/index.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+<script src="/js/admin-shared.js"></script>
+<script>
+document.getElementById('sidebarEl').innerHTML = buildSidebar('pages', 'home');
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let state = { home: {}, slides: [] };
+let addType = 'text';          // 'text' | 'image'
+let pendingImageFile = null;   // File object before upload
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+async function init() {
+  [state.home, state.slides] = await Promise.all([
+    apiGet('/api/data/home').catch(() => ({})),
+    apiGet('/api/data/heroSlides').catch(() => []),
+  ]);
+  // Normalise: DB might store array directly or wrapped object
+  if (!Array.isArray(state.slides)) state.slides = state.slides.slides || [];
+  render();
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render() {
+  const d   = state.home;
+  const sls = state.slides;
+
+  document.getElementById('mainContent').innerHTML = `
+
+    <!-- ════ HERO CAROUSEL MANAGER ════ -->
+    <div class="card">
+      <div class="card-title">
+        🎠 Hero Carousel Slides
+        <span class="badge badge-blue">${sls.length} slide${sls.length !== 1 ? 's' : ''}</span>
+      </div>
+
+      <!-- Slide list -->
+      <div class="slide-list" id="slideList">
+        ${renderSlideList(sls)}
+      </div>
+
+      <!-- ── Add new slide ── -->
+      <div style="border-top: 1px solid var(--border); padding-top: 20px;">
+        <div class="card-title" style="font-size:13px; margin-bottom:14px;">➕ Add New Slide</div>
+
+        <!-- Type toggle -->
+        <div class="type-toggle">
+          <button class="type-toggle-btn${addType==='text'?' active':''}"
+                  onclick="setAddType('text')">📝 Text Slide</button>
+          <button class="type-toggle-btn${addType==='image'?' active':''}"
+                  onclick="setAddType('image')">🖼️ Image Slide</button>
+        </div>
+
+        <!-- TEXT slide form -->
+        <div id="textForm" style="${addType==='text'?'':'display:none'}">
+          <div class="form-grid" style="gap:12px">
+            <div class="form-group form-full">
+              <label>Badge Text <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+              <input id="add-badge" placeholder="e.g. Est. 2000 • TN Matric Board Affiliated">
+            </div>
+            <div class="form-group">
+              <label>Main Title *</label>
+              <input id="add-title" placeholder="e.g. Shakespeare Ideal">
+            </div>
+            <div class="form-group">
+              <label>Title Accent <span style="color:var(--muted);font-weight:400">(shown below, coloured)</span></label>
+              <input id="add-titleAccent" placeholder="e.g. Matriculation School">
+            </div>
+            <div class="form-group form-full">
+              <label>Subtitle</label>
+              <textarea id="add-subtitle" rows="2"
+                placeholder="Nurturing Young Minds with Knowledge, Values &amp; Excellence..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Button 1 Label</label>
+              <input id="add-btn1Label" placeholder="Apply for Admission 2025">
+            </div>
+            <div class="form-group">
+              <label>Button 1 Link</label>
+              <input id="add-btn1Href" placeholder="/admissions.html">
+            </div>
+            <div class="form-group">
+              <label>Button 2 Label <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+              <input id="add-btn2Label" placeholder="Explore Our School">
+            </div>
+            <div class="form-group">
+              <label>Button 2 Link</label>
+              <input id="add-btn2Href" placeholder="/about.html">
+            </div>
+          </div>
+        </div>
+
+        <!-- IMAGE slide form -->
+        <div id="imageForm" style="${addType==='image'?'':'display:none'}">
+          <!-- Image picker -->
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <label class="img-preview-label" id="imgPickerLabel" for="addImageFile">
+              <span>📷</span>
+              Click to choose an image
+            </label>
+            <img id="imgPreviewEl" class="img-preview"
+                 style="display:none" alt="preview">
+            <input type="file" id="addImageFile" accept="image/*"
+                   style="display:none" onchange="onImagePick(this)">
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:12px">JPG, PNG — max 5 MB. Image fills the full hero area.</p>
+          <div class="form-grid" style="gap:12px">
+            <div class="form-group">
+              <label>Alt Text / Caption <span style="color:var(--muted);font-weight:400">(optional)</span></label>
+              <input id="add-imageCaption" placeholder="e.g. Science Exhibition 2025">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <button class="btn btn-primary" onclick="addSlide()">➕ Add Slide</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ OTHER HOME PAGE CONTENT ════ -->
+    <div class="card">
+      <div class="card-title">📄 Welcome &amp; General Content</div>
+      <div class="form-grid">
+        <div class="form-group form-full">
+          <label>Welcome Section Title</label>
+          <input id="pe-welTitle" value="${esc((d.welcome || {}).title || '')}">
+        </div>
+        <div class="form-group form-full">
+          <label>Welcome Content</label>
+          <textarea id="pe-welContent" rows="4">${esc((d.welcome || {}).content || '')}</textarea>
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="saveHomeContent()">💾 Save Content</button>
+    </div>
+  `;
+}
+
+// ── Slide list HTML ────────────────────────────────────────────────────────────
+function renderSlideList(sls) {
+  if (sls.length === 0) {
+    return `<div class="slides-empty">
+      <div class="slides-empty-icon">🎠</div>
+      <p>No slides yet. Add your first slide below.</p>
+    </div>`;
+  }
+
+  return sls.map((s, i) => {
+    const thumb = (s.type === 'image' && s.image)
+      ? `<img class="slide-thumb" src="${s.image}" alt="" onerror="this.onerror=null;this.style.display='none'">`
+      : `<div class="slide-thumb-placeholder">📝</div>`;
+
+    const label = s.type === 'image'
+      ? (s.caption || s.alt || 'Image Slide')
+      : (s.title ? `${s.title}${s.titleAccent ? ' ' + s.titleAccent : ''}` : 'Text Slide');
+
+    const sub = s.type === 'image'
+      ? 'Full-width image'
+      : (s.subtitle ? s.subtitle.slice(0, 60) + (s.subtitle.length > 60 ? '…' : '') : '');
+
+    return `<div class="slide-row" id="srow-${i}">
+      <div class="slide-num">${i + 1}</div>
+      ${thumb}
+      <div class="slide-info">
+        <div class="slide-badge ${s.type === 'image' ? 'slide-badge-image' : 'slide-badge-text'}">
+          ${s.type === 'image' ? '🖼️ Image' : '📝 Text'}
+        </div>
+        <div class="slide-info-title">${esc(label)}</div>
+        ${sub ? `<div class="slide-info-sub">${esc(sub)}</div>` : ''}
+      </div>
+      <div class="slide-actions">
+        <button class="btn btn-outline btn-sm" onclick="moveSlide(${i},-1)" ${i===0?'disabled':''}>▲</button>
+        <button class="btn btn-outline btn-sm" onclick="moveSlide(${i},+1)" ${i===sls.length-1?'disabled':''}>▼</button>
+        <button class="btn btn-danger btn-sm"  onclick="deleteSlide(${i})">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Type toggle ───────────────────────────────────────────────────────────────
+window.setAddType = function(type) {
+  addType = type;
+  document.querySelectorAll('.type-toggle-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('textForm').style.display  = type === 'text'  ? '' : 'none';
+  document.getElementById('imageForm').style.display = type === 'image' ? '' : 'none';
+};
+
+// ── Image picker preview ───────────────────────────────────────────────────────
+window.onImagePick = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  pendingImageFile = file;
+  const url = URL.createObjectURL(file);
+  const prev = document.getElementById('imgPreviewEl');
+  const lbl  = document.getElementById('imgPickerLabel');
+  prev.src = url;
+  prev.style.display = 'block';
+  lbl.style.display  = 'none';
+};
+
+// ── Upload image to server, return URL ────────────────────────────────────────
+async function uploadHeroImage(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  fd.append('type', 'hero');
+  const res = await api('/api/upload/hero', { method: 'POST', body: fd });
+  return res.url;
+}
+
+// ── Add slide ─────────────────────────────────────────────────────────────────
+window.addSlide = async function() {
+  if (addType === 'text') {
+    const title = document.getElementById('add-title').value.trim();
+    if (!title) return toast('Main title is required for a text slide.', 'error');
+    state.slides.push({
+      type:        'text',
+      badge:       document.getElementById('add-badge').value.trim(),
+      title,
+      titleAccent: document.getElementById('add-titleAccent').value.trim(),
+      subtitle:    document.getElementById('add-subtitle').value.trim(),
+      btn1Label:   document.getElementById('add-btn1Label').value.trim(),
+      btn1Href:    document.getElementById('add-btn1Href').value.trim(),
+      btn2Label:   document.getElementById('add-btn2Label').value.trim(),
+      btn2Href:    document.getElementById('add-btn2Href').value.trim(),
+    });
+  } else {
+    if (!pendingImageFile) return toast('Please choose an image first.', 'error');
+    const btn = event.currentTarget;
+    btn.disabled = true; btn.textContent = 'Uploading…';
+    try {
+      const url = await uploadHeroImage(pendingImageFile);
+      state.slides.push({
+        type:    'image',
+        image:   url,
+        alt:     document.getElementById('add-imageCaption').value.trim(),
+        caption: document.getElementById('add-imageCaption').value.trim(),
+      });
+      pendingImageFile = null;
+    } catch(e) {
+      btn.disabled = false; btn.textContent = '➕ Add Slide';
+      return toast('Image upload failed.', 'error');
+    }
+    btn.disabled = false; btn.textContent = '➕ Add Slide';
+  }
+
+  await saveSlides();
+  render();
+  toast('Slide added.');
+};
+
+// ── Move slide up/down ────────────────────────────────────────────────────────
+window.moveSlide = async function(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= state.slides.length) return;
+  [state.slides[i], state.slides[j]] = [state.slides[j], state.slides[i]];
+  await saveSlides();
+  // Just re-render slide list without full page rebuild
+  document.getElementById('slideList').innerHTML = renderSlideList(state.slides);
+  toast('Order updated.');
+};
+
+// ── Delete slide ──────────────────────────────────────────────────────────────
+window.deleteSlide = async function(i) {
+  if (!confirm('Remove this slide?')) return;
+  state.slides.splice(i, 1);
+  await saveSlides();
+  document.getElementById('slideList').innerHTML = renderSlideList(state.slides);
+  toast('Slide removed.');
+};
+
+// ── Persist slides ────────────────────────────────────────────────────────────
+async function saveSlides() {
+  await api('/api/data/heroSlides', {
+    method: 'PUT',
+    body: JSON.stringify(state.slides)
+  });
+}
+
+// ── Save general home content ─────────────────────────────────────────────────
+window.saveHomeContent = async function() {
+  const updated = {
+    ...state.home,
+    welcome: {
+      ...(state.home.welcome || {}),
+      title:   document.getElementById('pe-welTitle').value.trim(),
+      content: document.getElementById('pe-welContent').value.trim(),
+    }
+  };
+  try {
+    await api('/api/data/home', { method: 'PUT', body: JSON.stringify(updated) });
+    state.home = updated;
+    toast('Content saved.');
+  } catch(err) {
+    toast('Save failed: ' + err.message, 'error');
+  }
+};
+
+init();
+</script>
+</body>
+</html>

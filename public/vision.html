@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision & Mission - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/data/vision')
+      .then(res => res.json())
+      .then(data => {
+
+        const heroTag           = data.heroTag           || 'Our Purpose';
+        const heroTitle         = data.heroTitle         || 'Vision &amp; Mission';
+        const visionIcon        = data.visionIcon        || '🔭';
+        const vision            = data.vision            || 'To be a centre of excellence that transforms young minds into thoughtful, compassionate leaders.';
+        const missionIcon       = data.missionIcon       || '🎯';
+        const mission           = data.mission           || 'To provide holistic, child-centered education that nurtures intellectual curiosity, moral values, physical well-being, and creative expression.';
+        const coreValuesSubtitle = data.coreValuesSubtitle || 'What We Stand For';
+        const coreValuesHeading  = data.coreValuesHeading  || 'Our Core Values';
+        const values            = data.values            || [];
+
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero(heroTag, heroTitle)}
+
+          <div class="vision-container">
+
+            <div class="vision-mission-grid">
+
+              <div class="card vision-card">
+                <div class="vision-icon">${visionIcon}</div>
+                <h2>Our Vision</h2>
+                <p>${vision}</p>
+              </div>
+
+              <div class="card mission-card">
+                <div class="mission-icon">${missionIcon}</div>
+                <h2>Our Mission</h2>
+                <p>${mission}</p>
+              </div>
+
+            </div>
+
+            <div class="core-values-header">
+              <p class="core-values-subtitle">${coreValuesSubtitle}</p>
+              <h2>${coreValuesHeading}</h2>
+              <div class="core-values-line"></div>
+            </div>
+
+            <div class="core-values-grid">
+              ${values.map(v => `
+                <div class="card core-value-card">
+                  <div class="core-value-icon">${v.icon}</div>
+                  <h4>${v.title}</h4>
+                  <p>${v.description}</p>
+                </div>
+              `).join('')}
+            </div>
+
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+</body>
+</html>

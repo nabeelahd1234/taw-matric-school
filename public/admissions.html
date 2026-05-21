@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admissions - Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+  <div id="page-content"></div>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+
+  
+  <script>
+    fetch('/api/data/admissions')
+      .then(res => res.json())
+      .then(data => {
+        const stepsHtml = (data.processSteps || []).map(s => `
+          <div class="process-step">
+            <div class="process-step-number">${s.step}</div>
+  
+            <div>
+              <h4>${s.title}</h4>
+              <p class="process-step-description">${s.description}</p>
+            </div>
+          </div>
+        `).join('');
+  
+        const docsHtml = (data.documents || []).map(d => `
+          <li class="documents-item">
+            <span class="documents-check">✓</span>
+            ${d}
+          </li>
+        `).join('');
+  
+        document.getElementById('page-content').innerHTML = `
+          ${School.renderPageHero('Join Our Family', 'Admissions 2025-26')}
+  
+          <div class="admissions-container">
+  
+            <div class="admissions-banner">
+              <h2 class="admissions-banner-title">
+                Admissions Now Open!
+              </h2>
+  
+              <p>
+                Applications are being accepted for LKG to Class X.
+              </p>
+  
+              <p>
+                📅 Last Date: ${data.lastDate || '31st March 2025'}
+                &nbsp;|&nbsp;
+                📞 Call: ${data.contactPhone || '+91 98765 43210'}
+              </p>
+            </div>
+  
+            <div class="admissions-grid">
+  
+              <div>
+                <h3>Admission Process</h3>
+                ${stepsHtml}
+              </div>
+  
+              <div>
+                <div class="card documents-card">
+  
+                  <h4>📋 Required Documents</h4>
+  
+                  <ul class="documents-list">
+                    ${docsHtml}
+                  </ul>
+  
+                  <a href="/contact.html"
+                     class="btn btn-primary download-btn">
+                    Download Form
+                  </a>
+  
+                </div>
+              </div>
+  
+            </div>
+          </div>
+        `;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('page-content').innerHTML = School.renderError();
+      });
+  </script>
+</body>
+</html>

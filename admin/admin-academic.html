@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic — Admin Panel — Shakespeare Ideal School</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar" id="sidebarEl"></aside>
+
+<!-- ── Main ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Classes &amp; Sections</div>
+    <div class="topbar-meta">
+      <a href="/index.html" class="view-site-btn" target="_blank">View Live Site →</a>
+    </div>
+  </div>
+  <div class="content" id="mainContent"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="/js/admin-shared.js"></script>
+<script>
+// ── State ─────────────────────────────────────
+let state = { classes:[], syllabus:[], fees:[], announcements:[] };
+let activeSec = 'classes';
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+let ttState = { classId: null, periods:[], schedule:{} };
+
+// ── Boot ──────────────────────────────────────
+document.getElementById('sidebarEl').innerHTML = buildSidebar('academic');
+
+async function init() {
+  [state.classes, state.syllabus, state.fees, state.announcements] =
+    await Promise.all([
+      apiGet('/api/classes').catch(()=>[]),
+      apiGet('/api/syllabus').catch(()=>[]),
+      apiGet('/api/fees').catch(()=>[]),
+      apiGet('/api/announcements').catch(()=>[]),
+    ]);
+  switchSection('classes');
+}
+
+function switchSection(id) {
+  activeSec = id;
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.section === id);
+  });
+  const label = document.querySelector(`.nav-item[data-section="${id}"]`)?.textContent.trim() || id;
+  document.getElementById('topbarTitle').textContent = label;
+  render(id);
+}
+
+function render(id) {
+  const c = document.getElementById('mainContent');
+  switch(id) {
+    case 'classes':       renderClasses(c);       break;
+    case 'syllabus':      renderSyllabus(c);      break;
+    case 'timetable':     renderTimetable(c);     break;
+    case 'fees':          renderFees(c);          break;
+    case 'announcements': renderAnnouncements(c); break;
+    default: c.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔧</div><p>Section coming soon.</p></div>';
+  }
+}
+
+// ── Helpers ───────────────────────────────────
+function classOptions(sel='') {
+  return state.classes.map(c=>`<option value="${c.name}" ${sel===c.name?'selected':''}>${c.name}</option>`).join('');
+}
+function subjectsFromSyllabus() {
+  return [...new Set(state.syllabus.flatMap(s => (s.subjects||'').split(',').map(x=>x.trim()).filter(Boolean)))];
+}
+
+// ══════════════════════════════════════════════
+// CLASSES
+// ══════════════════════════════════════════════
+function renderClasses(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">📚 Classes &amp; Sections</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class Name</th><th>Sections (comma separated)</th><th style="width:160px;text-align:right">Actions</th></tr></thead>
+          <tbody id="classTbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+  refreshClassTable();
+}
+
+function refreshClassTable() {
+  const tb = document.getElementById('classTbody');
+  if (!tb) return;
+  const rows = state.classes.map(cls => `
+    <tr id="crow-${cls.id}">
+      <td><input id="cn-${cls.id}" value="${esc(cls.name)}" style="width:120px"></td>
+      <td><input id="cs-${cls.id}" value="${esc((cls.sections||[]).join(', '))}"></td>
+      <td style="text-align:right">
+        <button class="btn btn-success btn-sm" onclick="saveClass(${cls.id})">💾 Save</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteClass(${cls.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+  const addRow = `
+    <tr style="background:#f7fafc">
+      <td><input id="cn-new" placeholder="e.g. Grade XI"></td>
+      <td><input id="cs-new" placeholder="e.g. A, B, C"></td>
+      <td style="text-align:right">
+        <button class="btn btn-primary btn-sm" onclick="addClass()">➕ Add</button>
+      </td>
+    </tr>`;
+  tb.innerHTML = rows + addRow;
+}
+
+window.saveClass = async (id) => {
+  const name = document.getElementById(`cn-${id}`).value.trim();
+  const sections = document.getElementById(`cs-${id}`).value.split(',').map(s=>s.trim()).filter(Boolean);
+  if (!name) return toast('Class name is required.','error');
+  await api(`/api/classes/${id}`, { method:'PUT', body: JSON.stringify({name,sections}) });
+  state.classes = await apiGet('/api/classes');
+  toast('Class saved.');
+  refreshClassTable();
+};
+window.deleteClass = async (id) => {
+  if (!confirm('Delete this class?')) return;
+  await api(`/api/classes/${id}`, { method:'DELETE' });
+  state.classes = await apiGet('/api/classes');
+  toast('Class deleted.');
+  refreshClassTable();
+};
+window.addClass = async () => {
+  const name = document.getElementById('cn-new').value.trim();
+  const sections = document.getElementById('cs-new').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if (!name) return toast('Class name is required.','error');
+  await api('/api/classes', { method:'POST', body: JSON.stringify({name,sections}) });
+  state.classes = await apiGet('/api/classes');
+  toast('Class added.');
+  renderClasses(document.getElementById('mainContent'));
+};
+
+// ══════════════════════════════════════════════
+// SYLLABUS
+// ══════════════════════════════════════════════
+function renderSyllabus(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">📖 Syllabus</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Board</th><th>Subjects</th><th>Extra Activities</th><th style="width:160px;text-align:right">Actions</th></tr></thead>
+          <tbody id="sylTbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+  refreshSylTable();
+}
+
+function refreshSylTable() {
+  const tb = document.getElementById('sylTbody');
+  if (!tb) return;
+  const rows = state.syllabus.map(s => `
+    <tr id="srow-${s.id}">
+      <td><select id="sc-${s.id}">${classOptions(s.classes)}</select></td>
+      <td><input id="sb-${s.id}" value="${esc(s.board)}" style="width:140px"></td>
+      <td><input id="ss-${s.id}" value="${esc(s.subjects)}" placeholder="Math, Science, ..."></td>
+      <td><input id="se-${s.id}" value="${esc(s.extra||'')}" placeholder="Sports, Art, ..."></td>
+      <td style="text-align:right">
+        <button class="btn btn-success btn-sm" onclick="saveSyllabus(${s.id})">💾 Save</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSyllabus(${s.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+  const addRow = `
+    <tr style="background:#f7fafc">
+      <td><select id="sc-new">${classOptions()}</select></td>
+      <td><input id="sb-new" placeholder="Board"></td>
+      <td><input id="ss-new" placeholder="Subjects"></td>
+      <td><input id="se-new" placeholder="Extra Activities"></td>
+      <td style="text-align:right"><button class="btn btn-primary btn-sm" onclick="addSyllabus()">➕ Add</button></td>
+    </tr>`;
+  tb.innerHTML = rows + addRow;
+}
+
+window.saveSyllabus = async (id) => {
+  const obj = {
+    classes: document.getElementById(`sc-${id}`).value,
+    board: document.getElementById(`sb-${id}`).value.trim(),
+    subjects: document.getElementById(`ss-${id}`).value.trim(),
+    extra: document.getElementById(`se-${id}`).value.trim()
+  };
+  await api(`/api/syllabus/${id}`, { method:'PUT', body: JSON.stringify(obj) });
+  state.syllabus = await apiGet('/api/syllabus');
+  toast('Syllabus saved.');
+  refreshSylTable();
+};
+window.deleteSyllabus = async (id) => {
+  if (!confirm('Delete this syllabus entry?')) return;
+  await api(`/api/syllabus/${id}`, { method:'DELETE' });
+  state.syllabus = await apiGet('/api/syllabus');
+  toast('Syllabus deleted.');
+  refreshSylTable();
+};
+window.addSyllabus = async () => {
+  const obj = {
+    classes: document.getElementById('sc-new').value,
+    board: document.getElementById('sb-new').value.trim(),
+    subjects: document.getElementById('ss-new').value.trim(),
+    extra: document.getElementById('se-new').value.trim()
+  };
+  if (!obj.board || !obj.subjects) return toast('Board and subjects are required.','error');
+  await api('/api/syllabus', { method:'POST', body: JSON.stringify(obj) });
+  state.syllabus = await apiGet('/api/syllabus');
+  toast('Syllabus added.');
+  renderSyllabus(document.getElementById('mainContent'));
+};
+
+// ══════════════════════════════════════════════
+// FEES
+// ══════════════════════════════════════════════
+function feeTotal(t,a,tr) { return (parseFloat(t)||0)*3+(parseFloat(a)||0)+(parseFloat(tr)||0); }
+
+function renderFees(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">💰 Fee Structure <span style="font-size:11px;color:var(--muted);margin-left:8px;">Total = (Term × 3) + Annual + Transport</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Class</th><th>Term Fee (₹)</th><th>Annual Fee (₹)</th><th>Transport (₹)</th><th>Total (₹)</th><th style="width:160px;text-align:right">Actions</th></tr></thead>
+          <tbody id="feeTbody"></tbody>
+        </table>
+      </div>
+    </div>`;
+  refreshFeeTable();
+}
+
+function refreshFeeTable() {
+  const tb = document.getElementById('feeTbody');
+  if (!tb) return;
+  const rows = state.fees.map(f => `
+    <tr id="frow-${f.id}">
+      <td><select id="fc-${f.id}">${classOptions(f.cls)}</select></td>
+      <td><input id="ft-${f.id}" type="number" value="${f.term}" min="0" oninput="updateFeeTotal(${f.id})" style="width:90px"></td>
+      <td><input id="fa-${f.id}" type="number" value="${f.annual}" min="0" oninput="updateFeeTotal(${f.id})" style="width:90px"></td>
+      <td><input id="ftr-${f.id}" type="number" value="${f.transport}" min="0" oninput="updateFeeTotal(${f.id})" style="width:90px"></td>
+      <td><strong id="ftot-${f.id}" style="color:var(--blue)">₹${feeTotal(f.term,f.annual,f.transport).toLocaleString()}</strong></td>
+      <td style="text-align:right">
+        <button class="btn btn-success btn-sm" onclick="saveFee(${f.id})">💾 Save</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteFee(${f.id})">🗑</button>
+      </td>
+    </tr>`).join('');
+  const addRow = `
+    <tr style="background:#f7fafc">
+      <td><select id="fc-new">${classOptions()}</select></td>
+      <td><input id="ft-new" type="number" value="0" min="0" oninput="updateFeeTotal('new')" style="width:90px"></td>
+      <td><input id="fa-new" type="number" value="0" min="0" oninput="updateFeeTotal('new')" style="width:90px"></td>
+      <td><input id="ftr-new" type="number" value="0" min="0" oninput="updateFeeTotal('new')" style="width:90px"></td>
+      <td><strong id="ftot-new" style="color:var(--blue)">₹0</strong></td>
+      <td style="text-align:right"><button class="btn btn-primary btn-sm" onclick="addFee()">➕ Add</button></td>
+    </tr>`;
+  tb.innerHTML = rows + addRow;
+}
+
+window.updateFeeTotal = (id) => {
+  const t = parseFloat(document.getElementById(`ft-${id}`)?.value)||0;
+  const a = parseFloat(document.getElementById(`fa-${id}`)?.value)||0;
+  const tr = parseFloat(document.getElementById(`ftr-${id}`)?.value)||0;
+  const el = document.getElementById(`ftot-${id}`);
+  if (el) el.textContent = '₹'+feeTotal(t,a,tr).toLocaleString();
+};
+window.saveFee = async (id) => {
+  const term = parseFloat(document.getElementById(`ft-${id}`).value)||0;
+  const annual = parseFloat(document.getElementById(`fa-${id}`).value)||0;
+  const transport = parseFloat(document.getElementById(`ftr-${id}`).value)||0;
+  await api(`/api/fees/${id}`, { method:'PUT', body: JSON.stringify({
+    cls: document.getElementById(`fc-${id}`).value, term, annual, transport, total: feeTotal(term,annual,transport)
+  })});
+  state.fees = await apiGet('/api/fees');
+  toast('Fee saved.');
+  refreshFeeTable();
+};
+window.deleteFee = async (id) => {
+  if (!confirm('Delete this fee entry?')) return;
+  await api(`/api/fees/${id}`, { method:'DELETE' });
+  state.fees = await apiGet('/api/fees');
+  toast('Fee deleted.');
+  refreshFeeTable();
+};
+window.addFee = async () => {
+  const term = parseFloat(document.getElementById('ft-new').value)||0;
+  const annual = parseFloat(document.getElementById('fa-new').value)||0;
+  const transport = parseFloat(document.getElementById('ftr-new').value)||0;
+  await api('/api/fees', { method:'POST', body: JSON.stringify({
+    cls: document.getElementById('fc-new').value, term, annual, transport, total: feeTotal(term,annual,transport)
+  })});
+  state.fees = await apiGet('/api/fees');
+  toast('Fee added.');
+  renderFees(document.getElementById('mainContent'));
+};
+
+// ══════════════════════════════════════════════
+// ANNOUNCEMENTS
+// ══════════════════════════════════════════════
+function renderAnnouncements(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">📢 Announcements / Public Tickers</div>
+      <div id="annList"></div>
+      <div style="margin-top:16px;display:flex;gap:8px">
+        <input id="annNew" type="text" placeholder="New announcement text..." style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+        <button class="btn btn-primary" onclick="addAnn()">➕ Add</button>
+      </div>
+    </div>`;
+  refreshAnnList();
+}
+
+function refreshAnnList() {
+  const el = document.getElementById('annList');
+  if (!el) return;
+  if (state.announcements.length === 0) { el.innerHTML = emptyState('No announcements yet.'); return; }
+  el.innerHTML = state.announcements.map((txt, i) => `
+    <div class="ann-row" id="arow-${i}">
+      <span class="nav-icon">📢</span>
+      <input class="ann-edit-input" id="at-${i}" value="${esc(txt)}" style="padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-success btn-sm" onclick="saveAnn(${i})">💾 Save</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAnn(${i})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+window.saveAnn = async (i) => {
+  const text = document.getElementById(`at-${i}`).value.trim();
+  if (!text) return toast('Announcement text required.','error');
+  await api(`/api/announcements/${i}`, { method:'PUT', body: JSON.stringify({text}) });
+  state.announcements = await apiGet('/api/announcements');
+  toast('Announcement saved.');
+  refreshAnnList();
+};
+window.deleteAnn = async (i) => {
+  if (!confirm('Delete this announcement?')) return;
+  await api(`/api/announcements/${i}`, { method:'DELETE' });
+  state.announcements = await apiGet('/api/announcements');
+  toast('Announcement deleted.');
+  refreshAnnList();
+};
+window.addAnn = async () => {
+  const text = document.getElementById('annNew').value.trim();
+  if (!text) return toast('Announcement text required.','error');
+  await api('/api/announcements', { method:'POST', body: JSON.stringify({text}) });
+  state.announcements = await apiGet('/api/announcements');
+  document.getElementById('annNew').value = '';
+  toast('Announcement added.');
+  refreshAnnList();
+};
+
+// ══════════════════════════════════════════════
+// TIMETABLE
+// ══════════════════════════════════════════════
+function renderTimetable(c) {
+  c.innerHTML = `
+    <div class="card">
+      <div class="card-title">⏰ Class Timetable</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+        <label style="font-weight:600;font-size:13px">Select Class:</label>
+        <select id="ttClassSel" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px" onchange="loadTT(this.value)">
+          <option value="">-- Choose Class --</option>
+          ${state.classes.map(cl=>`<option value="${cl.id}">${cl.name}</option>`).join('')}
+        </select>
+        <button class="btn btn-primary" onclick="addTTPeriod()">➕ Add Period</button>
+        <button class="btn btn-success" onclick="saveTT()">💾 Save Timetable</button>
+      </div>
+      <div id="ttPeriods"></div>
+      <div id="ttGrid" class="timetable-scroll" style="margin-top:16px"></div>
+    </div>`;
+}
+
+async function loadTT(classId) {
+  if (!classId) return;
+  const data = await apiGet(`/api/timetable/${classId}`);
+  ttState = { classId: parseInt(classId), periods: data.periods||[], schedule: data.schedule||{} };
+  refreshTTPeriods();
+  refreshTTGrid();
+}
+window.loadTT = loadTT;
+
+function refreshTTPeriods() {
+  const el = document.getElementById('ttPeriods');
+  if (!el) return;
+  if (ttState.periods.length === 0) {
+    el.innerHTML = `<p style="color:var(--muted);font-size:13px;padding:8px 0">No periods configured. Click "Add Period" to start.</p>`;
+    return;
+  }
+  el.innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      ${ttState.periods.map((p,i)=>`
+        <div style="display:flex;align-items:center;gap:6px;background:var(--bg);padding:6px 10px;border-radius:6px;border:1px solid var(--border)">
+          <span style="font-size:11px;font-weight:700;color:var(--muted)">P${i+1}</span>
+          <input id="pp_name_${i}" value="${esc(p.name||'')}" placeholder="Label" style="width:110px;padding:4px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px">
+          <input id="pp_start_${i}" type="time" value="${p.start||'09:00'}" style="padding:4px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px">
+          <input id="pp_end_${i}" type="time" value="${p.end||'10:00'}" style="padding:4px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px">
+          <button class="btn btn-danger btn-sm" onclick="removeTTPeriod(${i})">✕</button>
+        </div>`).join('')}
+    </div>`;
+}
+
+function refreshTTGrid() {
+  const el = document.getElementById('ttGrid');
+  if (!el || ttState.periods.length === 0) { if(el) el.innerHTML=''; return; }
+  const subjects = [...subjectsFromSyllabus()];
+  const opts = ['','Recess Break','Lunch Break','Study Hall',...subjects];
+  let html = `<table class="timetable-table"><thead><tr><th>Period / Day</th>${DAYS.map(d=>`<th>${d}</th>`).join('')}</tr></thead><tbody>`;
+  ttState.periods.forEach((p,pi) => {
+    html += `<tr><td style="white-space:nowrap;font-size:11px;padding:6px 10px;background:var(--bg)"><strong>P${pi+1}</strong> ${p.name?` — ${p.name}`:''}<br><span style="color:var(--muted)">${p.start||''}–${p.end||''}</span></td>`;
+    DAYS.forEach((_,di) => {
+      const key=`${pi}_${di}`, cur=ttState.schedule[key]||'';
+      html += `<td><select onchange="ttState.schedule['${key}']=this.value">${opts.map(o=>`<option value="${o}" ${o===cur?'selected':''}>${o||'—'}</option>`).join('')}</select></td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table>`;
+  el.innerHTML = html;
+}
+
+window.addTTPeriod = () => {
+  syncTTPeriods();
+  ttState.periods.push({ start:'09:00', end:'10:00', name:'' });
+  refreshTTPeriods(); refreshTTGrid();
+};
+window.removeTTPeriod = (i) => {
+  syncTTPeriods();
+  ttState.periods.splice(i,1);
+  const ns={};
+  ttState.periods.forEach((_,np) => DAYS.forEach((_,nd)=>{
+    const ok=`${np>=i?np+1:np}_${nd}`, nk=`${np}_${nd}`;
+    if(ttState.schedule[ok]) ns[nk]=ttState.schedule[ok];
+  }));
+  ttState.schedule=ns;
+  refreshTTPeriods(); refreshTTGrid();
+};
+
+function syncTTPeriods() {
+  ttState.periods.forEach((_,i)=>{
+    const n=document.getElementById(`pp_name_${i}`), s=document.getElementById(`pp_start_${i}`), e=document.getElementById(`pp_end_${i}`);
+    if(n) ttState.periods[i].name=n.value.trim();
+    if(s) ttState.periods[i].start=s.value;
+    if(e) ttState.periods[i].end=e.value;
+  });
+}
+window.saveTT = async () => {
+  if (!ttState.classId) return toast('Please select a class first.','error');
+  syncTTPeriods();
+  await api(`/api/timetable/${ttState.classId}`, { method:'PUT', body: JSON.stringify({ days:DAYS, periods:ttState.periods, schedule:ttState.schedule }) });
+  toast('Timetable saved.');
+};
+
+// ── Start ──────────────────────────────────────
+init();
+</script>
+</body>
+</html>

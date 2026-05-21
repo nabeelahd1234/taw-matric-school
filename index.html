@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shakespeare Ideal Matriculation School</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* ═══════════════════════════════════════════
+       HERO CAROUSEL
+    ═══════════════════════════════════════════ */
+    .hero-carousel {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      background: #0f172a; /* fallback while loading */
+    }
+
+    /* track that moves */
+    .hero-track {
+      display: flex;
+      transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
+      will-change: transform;
+    }
+
+    /* ── Every slide ── */
+    .hero-slide {
+      min-width: 100%;
+      position: relative;
+    }
+
+    /* ── TEXT slide — keeps original hero-section look ── */
+    .hero-slide-text .hero-section {
+      margin: 0;           /* reset any page margin */
+    }
+
+    /* ── IMAGE slide ── */
+    .hero-slide-image {
+      height: 520px;
+      overflow: hidden;
+    }
+    .hero-slide-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Optional caption overlay */
+    .hero-slide-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 18px 28px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.55));
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* ── Prev / Next arrows ── */
+    .hero-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 20;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(4px);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      line-height: 1;
+      padding: 0;
+    }
+    .hero-arrow:hover { background: rgba(255,255,255,0.32); }
+    .hero-arrow-left  { left: 18px; }
+    .hero-arrow-right { right: 18px; }
+
+    /* ── Dots ── */
+    .hero-dots {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+    }
+    .hero-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .hero-dot.active {
+      background: #fff;
+      transform: scale(1.35);
+    }
+
+    /* ── Single slide: hide arrows/dots ── */
+    .hero-carousel.single-slide .hero-arrow,
+    .hero-carousel.single-slide .hero-dots { display: none; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="header-placeholder"></div>
+    <div id="page-content"></div>
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/main.js"></script>
+  <script>
+    // ── Hero Carousel engine ──────────────────────────────────────────────────
+    function buildHeroCarousel(slides) {
+      if (!slides || slides.length === 1) {
+        // Fallback: show default static hero if everything is empty
+        return `<div class="hero-section">
+          <div class="hero-content">
+            <div class="hero-badge-container">
+              <span class="hero-badge">Est. 2000 • TN Matric Board Affiliated</span>
+            </div>
+            <h1 class="hero-title">
+              Shakespeare Ideal<br/><span class="hero-title-accent">Matriculation School</span>
+            </h1>
+            <p class="hero-subtitle">
+              Nurturing Young Minds with Knowledge, Values &amp; Excellence since 2000.
+              Shaping tomorrow's leaders in a caring, disciplined environment.
+            </p>
+            <div class="hero-btn-group">
+              <a href="/admissions.html" class="btn btn-primary">Apply for Admission 2025</a>
+              <a href="/about.html"      class="btn btn-ghost">Explore Our School</a>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const slidesHtml = slides.map((s, i) => {
+        if (s.type === 'image') {
+          return `<div class="hero-slide hero-slide-image" data-index="${i}">
+            <img src="${s.image}" alt="${s.alt || ''}" onerror="this.onerror=null;this.src=''">
+            ${s.caption ? `<div class="hero-slide-caption">${s.caption}</div>` : ''}
+          </div>`;
+        }
+        
+        // Dynamic or Configured Text Slide
+        const btn1 = s.btn1Label ? `<a href="${s.btn1Href || '/admissions.html'}" class="btn btn-primary">${s.btn1Label}</a>` : '';
+        const btn2 = s.btn2Label ? `<a href="${s.btn2Href || '/about.html'}"      class="btn btn-ghost">${s.btn2Label}</a>`   : '';
+        
+        return `<div class="hero-slide hero-slide-text" data-index="${i}">
+          <div class="hero-section">
+            <div class="hero-content">
+              ${s.badge ? `<div class="hero-badge-container"><span class="hero-badge">${s.badge}</span></div>` : ''}
+              <h1 class="hero-title">${s.title || ''}${s.titleAccent ? `<br><span class="hero-title-accent">${s.titleAccent}</span>` : ''}</h1>
+              ${s.subtitle ? `<p class="hero-subtitle">${s.subtitle}</p>` : ''}
+              ${(btn1 || btn2) ? `<div class="hero-btn-group">${btn1}${btn2}</div>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      const dotsHtml = slides.length > 1
+        ? `<div class="hero-dots" id="heroDots">
+            ${slides.map((_, i) => `<button class="hero-dot${i===0?' active':''}" data-dot="${i}"></button>`).join('')}
+          </div>`
+        : '';
+
+      const arrowsHtml = slides.length > 1
+        ? `<button class="hero-arrow hero-arrow-left"  onclick="heroPrev()">&#8249;</button>
+           <button class="hero-arrow hero-arrow-right" onclick="heroNext()">&#8250;</button>`
+        : '';
+
+      return `<div class="hero-carousel${slides.length === 1 ? ' single-slide' : ''}" id="heroCarousel">
+        <div class="hero-track" id="heroTrack">${slidesHtml}</div>
+        ${arrowsHtml}
+        ${dotsHtml}
+      </div>`;
+    }
+
+    // ── Carousel state ────────────────────────────────────────────────────────
+    let _heroIdx   = 0;
+    let _heroTotal = 0;
+    let _heroTimer = null;
+
+    function heroGoTo(idx) {
+      _heroIdx = (idx + _heroTotal) % _heroTotal;
+      const track = document.getElementById('heroTrack');
+      if (track) track.style.transform = `translateX(-${_heroIdx * 100}%)`;
+      document.querySelectorAll('.hero-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === _heroIdx);
+      });
+    }
+    function heroNext() { heroGoTo(_heroIdx + 1); }
+    function heroPrev() { heroGoTo(_heroIdx - 1); }
+
+    function heroAutoplay(interval) {
+      clearInterval(_heroTimer);
+      if (_heroTotal > 1)
+        _heroTimer = setInterval(heroNext, interval || 5000);
+    }
+
+    function initCarousel(total) {
+      _heroTotal = total;
+      _heroIdx   = 0;
+
+      // Dot clicks
+      document.querySelectorAll('.hero-dot').forEach(d => {
+        d.addEventListener('click', () => { heroGoTo(+d.dataset.dot); heroAutoplay(); });
+      });
+
+      // Pause on hover
+      const carousel = document.getElementById('heroCarousel');
+      if (carousel) {
+        carousel.addEventListener('mouseenter', () => clearInterval(_heroTimer));
+        carousel.addEventListener('mouseleave', () => heroAutoplay());
+      }
+
+      heroAutoplay();
+    }
+
+    // ── Touch / swipe support ─────────────────────────────────────────────────
+    function addSwipe(el) {
+      let sx = 0;
+      el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+      el.addEventListener('touchend',   e => {
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) { dx < 0 ? heroNext() : heroPrev(); heroAutoplay(); }
+      });
+    }
+
+    // ── Page loader ───────────────────────────────────────────────────────────
+    async function loadHomePage() {
+      const container = document.getElementById('page-content');
+
+      const [home, heroSlides, gallery, fees, announcements] = await Promise.all([
+        fetch('/api/data/home').then(r => r.json()).catch(() => ({})),
+        fetch('/api/data/heroSlides').then(r => r.json()).catch(() => []),
+        fetch('/api/gallery').then(r => r.json()).catch(() => []),
+        fetch('/api/fees').then(r => r.json()).catch(() => []),
+        fetch('/api/announcements').then(r => r.json()).catch(() => []),
+      ]);
+
+      let slides = [];
+
+      if (Array.isArray(heroSlides)) {
+        slides = heroSlides;
+      } else if (heroSlides && Array.isArray(heroSlides.slides)) {
+        slides = heroSlides.slides;
+      }
+
+      // ── FIX: Inject the Admin Welcome Message at the front of the Carousel ──
+      if (home && home.welcome && (home.welcome.title || home.welcome.content)) {
+        const adminWelcomeSlide = {
+          type: 'text',
+          badge: 'Est. 2000 • TN Matric Board Affiliated',
+          title: home.welcome.title || 'Shakespeare Ideal',
+          titleAccent: 'Matriculation School',
+          subtitle: home.welcome.content || '',
+          btn1Label: 'Apply for Admission 2025',
+          btn1Href: '/admissions.html',
+          btn2Label: 'Explore Our School',
+          btn2Href: '/about.html'
+        };
+        // Put the customized text slide as the first slide item
+        slides.unshift(adminWelcomeSlide);
+      }
+
+      console.log('Processed Carousel Slides:', slides);
+
+      container.innerHTML = `
+        ${buildHeroCarousel(slides)}
+
+        <div class="stats-section">
+          <div class="stats-container">
+            ${(home.stats || []).map(s => `
+              <div>
+                <div class="stat-number">${s.number}</div>
+                <div class="stat-label">${s.label}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="welcome-section">
+          <div>
+            <p class="welcome-tag">Welcome to Our School</p>
+            <h2 class="welcome-title">${(home.welcome || {}).title || ''}</h2>
+            <p class="welcome-desc">${(home.welcome || {}).content || ''}</p>
+            <div class="welcome-btn-group">
+              <a href="/about.html"     class="btn btn-primary btn-small">Read More</a>
+              <a href="/principal.html" class="btn btn-outline btn-small">Meet Our Principal</a>
+            </div>
+          </div>
+          <div class="welcome-features-grid">
+            <div class="welcome-feat-card welcome-feat-caring">
+              <div class="welcome-feat-icon">🌱</div>
+              <div class="welcome-feat-text">Caring Environment</div>
+            </div>
+            <div class="welcome-feat-card welcome-feat-teachers">
+              <div class="welcome-feat-icon">🎓</div>
+              <div class="welcome-feat-text">Dedicated Teachers</div>
+            </div>
+            <div class="welcome-feat-card welcome-feat-facilities">
+              <div class="welcome-feat-icon">🏫</div>
+              <div class="welcome-feat-text">Modern Facilities</div>
+            </div>
+            <div class="welcome-feat-card welcome-feat-cocurricular">
+              <div class="welcome-feat-icon">🎨</div>
+              <div class="welcome-feat-text">Co-curricular Focus</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="features-section">
+          <div class="features-container">
+            <div class="features-header">
+              <p class="features-tag">Our Strengths</p>
+              <h2 class="features-title">Why Choose Shakespeare Ideal?</h2>
+              <div class="features-divider"></div>
+            </div>
+            <div class="features-grid">
+              ${(home.features || []).map(f => `
+                <div class="card features-card">
+                  <div class="feature-icon">${f.icon}</div>
+                  <h3 class="feature-card-title">${f.title}</h3>
+                  <p class="feature-card-desc">${f.description}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-preview-section">
+          <div class="gallery-preview-header">
+            <p class="gallery-preview-tag">Gallery Highlights</p>
+            <h2 class="gallery-preview-title">School Life in Pictures</h2>
+            <div class="gallery-preview-divider"></div>
+          </div>
+          <div class="gallery-preview-grid">
+            ${gallery.slice(0, 6).map(g => `
+              <div class="gallery-preview-item">
+                <img src="${g.filename}" alt="${g.title}" class="gallery-preview-img">
+                <div class="gallery-preview-overlay">
+                  <span class="gallery-preview-caption">${g.title}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="gallery-preview-footer">
+            <a href="/gallery.html" class="btn btn-primary">View Full Gallery →</a>
+          </div>
+        </div>
+
+        <div class="notice-section">
+          <div class="notice-container">
+            <div class="notice-header">
+              <p class="notice-tag">Latest Updates</p>
+              <h2 class="notice-title">Notice Board</h2>
+              <div class="notice-divider"></div>
+            </div>
+            <div class="notice-list">
+              ${announcements.map(a => `
+                <div class="notice-item">
+                  <div class="notice-bullet"></div>
+                  <span class="notice-text">${a}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <h2 class="cta-title">Ready to Join Our School Family?</h2>
+          <p class="cta-subtitle">Admissions for 2025-26 are now open. Secure your child's bright future today.</p>
+          <div class="cta-btn-group">
+            <a href="/admissions.html" class="btn btn-primary">Apply for Admission</a>
+            <a href="/contact.html"    class="btn btn-outline">Contact Us</a>
+          </div>
+        </div>
+      `;
+
+      if (slides.length > 0) {
+        initCarousel(slides.length);
+        const track = document.getElementById('heroTrack');
+        if (track) addSwipe(track);
+      }
+    }
+
+    loadHomePage();
+  </script>
+</body>
+</html>
