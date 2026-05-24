@@ -1,403 +1,591 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shakespeare Ideal Matriculation School</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <style>
-    /* ═══════════════════════════════════════════
-       HERO CAROUSEL
-    ═══════════════════════════════════════════ */
-    .hero-carousel {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      background: #0f172a; /* fallback while loading */
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAW Matric School - Home</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ===== HERO ===== */
+.hero {
+  min-height: 88vh;
+  background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
 
-    /* track that moves */
-    .hero-track {
-      display: flex;
-      transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1);
-      will-change: transform;
-    }
+.hero-bg-circles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.12;
+}
+.hero-circle:nth-child(1) { width:600px;height:600px;background:var(--primary);top:-200px;right:-200px;animation:pulse 6s ease-in-out infinite; }
+.hero-circle:nth-child(2) { width:400px;height:400px;background:var(--secondary);bottom:-150px;left:-100px;animation:pulse 8s ease-in-out 2s infinite; }
+.hero-circle:nth-child(3) { width:250px;height:250px;background:var(--accent2);top:50%;left:40%;animation:pulse 5s ease-in-out 1s infinite; }
 
-    /* ── Every slide ── */
-    .hero-slide {
-      min-width: 100%;
-      position: relative;
-    }
+@keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
 
-    /* ── TEXT slide — keeps original hero-section look ── */
-    .hero-slide-text .hero-section {
-      margin: 0;           /* reset any page margin */
-    }
+.hero-floating-emojis span {
+  position: absolute;
+  font-size: 2.5rem;
+  animation: floatUp 6s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-floating-emojis span:nth-child(1){left:5%;top:15%;animation-delay:0s;}
+.hero-floating-emojis span:nth-child(2){left:10%;top:70%;animation-delay:1s;}
+.hero-floating-emojis span:nth-child(3){right:5%;top:20%;animation-delay:2s;}
+.hero-floating-emojis span:nth-child(4){right:12%;top:65%;animation-delay:3s;}
+.hero-floating-emojis span:nth-child(5){left:45%;top:5%;animation-delay:1.5s;}
+.hero-floating-emojis span:nth-child(6){left:20%;top:40%;animation-delay:4s;}
 
-    /* ── IMAGE slide ── */
-    .hero-slide-image {
-      height: 520px;
-      overflow: hidden;
-    }
-    .hero-slide-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    /* Optional caption overlay */
-    .hero-slide-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 18px 28px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.55));
-      color: #fff;
-      font-size: 15px;
-      font-weight: 500;
-    }
+@keyframes floatUp {
+  0%,100%{transform:translateY(0) rotate(-10deg);}
+  50%{transform:translateY(-25px) rotate(10deg);}
+}
 
-    /* ── Prev / Next arrows ── */
-    .hero-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 20;
-      background: rgba(255,255,255,0.18);
-      backdrop-filter: blur(4px);
-      border: 1.5px solid rgba(255,255,255,0.35);
-      color: #fff;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s;
-      line-height: 1;
-      padding: 0;
-    }
-    .hero-arrow:hover { background: rgba(255,255,255,0.32); }
-    .hero-arrow-left  { left: 18px; }
-    .hero-arrow-right { right: 18px; }
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
 
-    /* ── Dots ── */
-    .hero-dots {
-      position: absolute;
-      bottom: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      z-index: 20;
-    }
-    .hero-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.45);
-      cursor: pointer;
-      border: none;
-      padding: 0;
-      transition: background 0.25s, transform 0.25s;
-    }
-    .hero-dot.active {
-      background: #fff;
-      transform: scale(1.35);
-    }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,230,109,0.15);
+  border: 2px solid var(--accent1);
+  color: var(--accent1);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.8s ease both;
+}
 
-    /* ── Single slide: hide arrows/dots ── */
-    .hero-carousel.single-slide .hero-arrow,
-    .hero-carousel.single-slide .hero-dots { display: none; }
-  </style>
+@keyframes slideDown { from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);} }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  animation: slideUp 0.8s 0.2s ease both;
+}
+.hero-title .highlight {
+  color: var(--primary);
+  text-shadow: 0 0 40px rgba(255,107,53,0.6);
+  position: relative;
+  display: inline-block;
+}
+.hero-title .highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: -5px; right: -5px;
+  height: 8px;
+  background: var(--accent1);
+  border-radius: 4px;
+  transform: skewX(-5deg);
+  z-index: -1;
+}
+
+.hero-sub {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: var(--secondary);
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.8s 0.3s ease both;
+}
+
+.hero-desc {
+  color: rgba(255,255,255,0.7);
+  font-size: 1.1rem;
+  max-width: 580px;
+  margin: 0 auto 2.5rem;
+  font-weight: 600;
+  line-height: 1.7;
+  animation: slideUp 0.8s 0.4s ease both;
+}
+
+@keyframes slideUp { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+
+.hero-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: slideUp 0.8s 0.5s ease both;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  max-width: 900px;
+  margin: -60px auto 0;
+  position: relative;
+  z-index: 10;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-3d-lg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.stat-card:hover { transform: translate(-4px,-4px); box-shadow: var(--shadow-hover); }
+.stat-card:nth-child(1){background: linear-gradient(135deg,#fff5f0,#ffe8df); border-color:var(--primary);}
+.stat-card:nth-child(2){background: linear-gradient(135deg,#f0fffd,#d9fff9); border-color:var(--secondary);}
+.stat-card:nth-child(3){background: linear-gradient(135deg,#fffdf0,#fff8cc); border-color:var(--accent1);}
+.stat-card:nth-child(4){background: linear-gradient(135deg,#fdf0ff,#f3d9ff); border-color:var(--accent2);}
+
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--dark);
+  display: block;
+}
+.stat-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* FEATURES */
+.features-section {
+  background: linear-gradient(180deg, var(--light) 0%, #fff 100%);
+  padding: 5rem 2rem;
+}
+
+.features-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: var(--white);
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  box-shadow: var(--shadow-3d-lg);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+.feature-card:hover { transform: translate(-5px,-5px); box-shadow: 12px 12px 0 rgba(0,0,0,0.25); }
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  border-radius: 0 0 0 80px;
+  background: rgba(0,0,0,0.04);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  animation: iconBounce 3s ease-in-out infinite;
+}
+@keyframes iconBounce {
+  0%,100%{transform:scale(1) rotate(-3deg);}
+  50%{transform:scale(1.15) rotate(3deg);}
+}
+
+.feature-card h3 {
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--dark);
+}
+.feature-card p { color:#666; font-size:0.9rem; line-height:1.6; }
+
+.feature-card:nth-child(1){background:linear-gradient(135deg,#fff5f0,#fff);}
+.feature-card:nth-child(2){background:linear-gradient(135deg,#f0fffd,#fff);}
+.feature-card:nth-child(3){background:linear-gradient(135deg,#fffdf0,#fff);}
+.feature-card:nth-child(4){background:linear-gradient(135deg,#fdf0ff,#fff);}
+.feature-card:nth-child(5){background:linear-gradient(135deg,#f0f4ff,#fff);}
+.feature-card:nth-child(6){background:linear-gradient(135deg,#f0fff5,#fff);}
+
+/* NEWS SECTION */
+.news-section {
+  padding: 4rem 2rem;
+  background: #fff;
+}
+.news-grid {
+  max-width:1200px; margin:0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.news-card {
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-lg);
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  background: var(--white);
+}
+.news-card:hover { transform: translate(-4px,-4px); box-shadow: var(--shadow-hover); }
+
+.news-card-img {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  position: relative;
+}
+.news-card:nth-child(1) .news-card-img { background: linear-gradient(135deg,#ffebe0,#ffd6c2); }
+.news-card:nth-child(2) .news-card-img { background: linear-gradient(135deg,#e0fff8,#c2fff0); }
+.news-card:nth-child(3) .news-card-img { background: linear-gradient(135deg,#f0e0ff,#e0c2ff); }
+
+.news-card-body { padding: 1.2rem; }
+.news-date {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.news-card-body h4 {
+  font-family: var(--font-accent);
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+.news-card-body p { font-size:0.85rem; color:#666; line-height:1.6; }
+
+/* CTA */
+.cta-section {
+  margin: 2rem auto 4rem;
+  max-width: 900px;
+  background: linear-gradient(135deg, var(--primary), var(--accent3));
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-3d-lg);
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '🎉🎊🌟✨🎈';
+  position: absolute;
+  top: 10px; font-size:2rem;
+  width:100%; text-align:center;
+  opacity:0.2; letter-spacing:20px;
+}
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+}
+.cta-section p {
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* SECTION TITLE CENTER */
+.title-center {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.title-center h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--dark);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+}
+.title-center p { color:#666; font-size:1rem; font-weight:600; margin-top:0.5rem; }
+.title-center .underline-bar {
+  width: 80px; height: 6px;
+  background: linear-gradient(90deg,var(--primary),var(--accent3));
+  border-radius: 3px;
+  margin: 0.8rem auto 0;
+}
+
+@media(max-width:768px){
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:480px){
+  .hero-stats{grid-template-columns:1fr;max-width:300px;}
+}
+</style>
 </head>
 <body>
-  <div id="app">
-    <div id="header-placeholder"></div>
-    <div id="page-content"></div>
-    <div id="footer-placeholder"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🏫</div>
+      <div>
+        <div class="nav-logo-text">TAW <span>School</span></div>
+        <div class="nav-logo-sub">Matric Higher Secondary</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">🏠 Home</a></li>
+      <li><a href="about.html">🏫 About</a></li>
+      <li><a href="principal.html">👨‍💼 Principal</a></li>
+      <li><a href="vision.html">🌟 Vision</a></li>
+      <li><a href="achievements.html">🏆 Achievements</a></li>
+      <li><a href="rules.html">📋 Rules</a></li>
+      <li><a href="gallery.html">🖼️ Gallery</a></li>
+      <li><a href="admissions.html">📝 Admissions</a></li>
+      <li><a href="fees.html">💰 Fees</a></li>
+      <li><a href="syllabus.html">📚 Syllabus</a></li>
+      <li><a href="timetable.html">⏰ Timetable</a></li>
+      <li><a href="contact.html">📞 Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
   </div>
+</nav>
 
-  <script src="/js/components.js"></script>
-  <script src="/js/main.js"></script>
-  <script>
-    // ── Hero Carousel engine ──────────────────────────────────────────────────
-    function buildHeroCarousel(slides) {
-      if (!slides || slides.length === 1) {
-        // Fallback: show default static hero if everything is empty
-        return `<div class="hero-section">
-          <div class="hero-content">
-            <div class="hero-badge-container">
-              <span class="hero-badge">Est. 2000 • TN Matric Board Affiliated</span>
-            </div>
-            <h1 class="hero-title">
-              Shakespeare Ideal<br/><span class="hero-title-accent">Matriculation School</span>
-            </h1>
-            <p class="hero-subtitle">
-              Nurturing Young Minds with Knowledge, Values &amp; Excellence since 2000.
-              Shaping tomorrow's leaders in a caring, disciplined environment.
-            </p>
-            <div class="hero-btn-group">
-              <a href="/admissions.html" class="btn btn-primary">Apply for Admission 2025</a>
-              <a href="/about.html"      class="btn btn-ghost">Explore Our School</a>
-            </div>
-          </div>
-        </div>`;
-      }
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-circles">
+    <div class="hero-circle"></div>
+    <div class="hero-circle"></div>
+    <div class="hero-circle"></div>
+  </div>
+  <div class="hero-floating-emojis">
+    <span>📚</span><span>✏️</span><span>🎨</span><span>🔬</span><span>🌟</span><span>🎒</span>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">⭐ Est. 2005 · Excellence in Education ⭐</div>
+    <h1 class="hero-title">
+      Welcome to<br><span class="highlight">TAW Matric</span>
+    </h1>
+    <p class="hero-sub">Higher Secondary School</p>
+    <p class="hero-desc">
+      Where every child's potential is nurtured with love, knowledge,
+      and the joy of learning! 🌈 Building tomorrow's leaders today.
+    </p>
+    <div class="hero-btns">
+      <a href="admissions.html" class="btn btn-primary">📝 Apply Now</a>
+      <a href="about.html" class="btn btn-secondary">🏫 About Us</a>
+      <a href="contact.html" class="btn btn-accent">📞 Contact</a>
+    </div>
+  </div>
+</section>
 
-      const slidesHtml = slides.map((s, i) => {
-        if (s.type === 'image') {
-          return `<div class="hero-slide hero-slide-image" data-index="${i}">
-            <img src="${s.image}" alt="${s.alt || ''}" onerror="this.onerror=null;this.src=''">
-            ${s.caption ? `<div class="hero-slide-caption">${s.caption}</div>` : ''}
-          </div>`;
-        }
-        
-        // Dynamic or Configured Text Slide
-        const btn1 = s.btn1Label ? `<a href="${s.btn1Href || '/admissions.html'}" class="btn btn-primary">${s.btn1Label}</a>` : '';
-        const btn2 = s.btn2Label ? `<a href="${s.btn2Href || '/about.html'}"      class="btn btn-ghost">${s.btn2Label}</a>`   : '';
-        
-        return `<div class="hero-slide hero-slide-text" data-index="${i}">
-          <div class="hero-section">
-            <div class="hero-content">
-              ${s.badge ? `<div class="hero-badge-container"><span class="hero-badge">${s.badge}</span></div>` : ''}
-              <h1 class="hero-title">${s.title || ''}${s.titleAccent ? `<br><span class="hero-title-accent">${s.titleAccent}</span>` : ''}</h1>
-              ${s.subtitle ? `<p class="hero-subtitle">${s.subtitle}</p>` : ''}
-              ${(btn1 || btn2) ? `<div class="hero-btn-group">${btn1}${btn2}</div>` : ''}
-            </div>
-          </div>
-        </div>`;
-      }).join('');
+<!-- STATS STRIP -->
+<div class="hero-stats">
+  <div class="stat-card animate-in">
+    <span class="stat-num" id="cnt1">0</span>
+    <span class="stat-label">📚 Students</span>
+  </div>
+  <div class="stat-card animate-in">
+    <span class="stat-num" id="cnt2">0</span>
+    <span class="stat-label">👩‍🏫 Teachers</span>
+  </div>
+  <div class="stat-card animate-in">
+    <span class="stat-num" id="cnt3">0</span>
+    <span class="stat-label">🏆 Awards</span>
+  </div>
+  <div class="stat-card animate-in">
+    <span class="stat-num" id="cnt4">0</span>
+    <span class="stat-label">📅 Years</span>
+  </div>
+</div>
 
-      const dotsHtml = slides.length > 1
-        ? `<div class="hero-dots" id="heroDots">
-            ${slides.map((_, i) => `<button class="hero-dot${i===0?' active':''}" data-dot="${i}"></button>`).join('')}
-          </div>`
-        : '';
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="title-center">
+    <h2>Why Choose TAW? 🤔</h2>
+    <p>We offer the best environment for your child to grow and shine!</p>
+    <div class="underline-bar"></div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card animate-in">
+      <span class="feature-icon">🎓</span>
+      <h3>Expert Teachers</h3>
+      <p>Our qualified and experienced faculty guides every student with patience and passion for learning.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <span class="feature-icon">🔬</span>
+      <h3>Modern Labs</h3>
+      <p>State-of-the-art science, computer and language labs for hands-on practical learning experiences.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <span class="feature-icon">🏅</span>
+      <h3>Sports & Activities</h3>
+      <p>Comprehensive sports programs, cultural events and extracurricular activities for all-round development.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <span class="feature-icon">📖</span>
+      <h3>Rich Library</h3>
+      <p>A vast library with thousands of books, journals and digital resources to feed curious minds.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <span class="feature-icon">🌍</span>
+      <h3>Global Curriculum</h3>
+      <p>Tamil Nadu Matric Board curriculum blended with global best practices for competitive readiness.</p>
+    </div>
+    <div class="feature-card animate-in">
+      <span class="feature-icon">❤️</span>
+      <h3>Safe Environment</h3>
+      <p>A nurturing, safe and inclusive campus where every child feels valued, respected and loved.</p>
+    </div>
+  </div>
+</section>
 
-      const arrowsHtml = slides.length > 1
-        ? `<button class="hero-arrow hero-arrow-left"  onclick="heroPrev()">&#8249;</button>
-           <button class="hero-arrow hero-arrow-right" onclick="heroNext()">&#8250;</button>`
-        : '';
+<!-- NEWS -->
+<section class="news-section">
+  <div class="title-center">
+    <h2>Latest News & Events 📰</h2>
+    <p>Stay updated with what's happening at TAW!</p>
+    <div class="underline-bar"></div>
+  </div>
+  <div class="news-grid">
+    <div class="news-card animate-in">
+      <div class="news-card-img">🏆</div>
+      <div class="news-card-body">
+        <span class="news-date">May 2025</span>
+        <h4>State Science Olympiad Winners!</h4>
+        <p>TAW students bagged 3 gold medals at the Tamil Nadu State Science Olympiad 2025. Proud moment!</p>
+      </div>
+    </div>
+    <div class="news-card animate-in">
+      <div class="news-card-img">🎨</div>
+      <div class="news-card-body">
+        <span class="news-date">April 2025</span>
+        <h4>Annual Cultural Fest 2025</h4>
+        <p>Over 500 students participated in our annual cultural extravaganza with dance, music and drama.</p>
+      </div>
+    </div>
+    <div class="news-card animate-in">
+      <div class="news-card-img">📝</div>
+      <div class="news-card-body">
+        <span class="news-date">June 2025</span>
+        <h4>Admissions Open 2025-26</h4>
+        <p>Applications for the academic year 2025-26 are now open. Early bird scholarships available!</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-      return `<div class="hero-carousel${slides.length === 1 ? ' single-slide' : ''}" id="heroCarousel">
-        <div class="hero-track" id="heroTrack">${slidesHtml}</div>
-        ${arrowsHtml}
-        ${dotsHtml}
-      </div>`;
-    }
+<!-- CTA -->
+<div style="padding: 0 2rem;">
+  <div class="cta-section animate-in">
+    <h2>🎒 Ready to Join Our Family?</h2>
+    <p>Give your child the gift of quality education in a fun and vibrant environment!</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="admissions.html" class="btn btn-accent">📝 Apply for Admission</a>
+      <a href="contact.html" class="btn" style="background:rgba(255,255,255,0.9);color:var(--dark);">📞 Schedule a Visit</a>
+    </div>
+  </div>
+</div>
 
-    // ── Carousel state ────────────────────────────────────────────────────────
-    let _heroIdx   = 0;
-    let _heroTotal = 0;
-    let _heroTimer = null;
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>🏫 TAW School</h3>
+      <p>TAW Matric Higher Secondary School – nurturing bright minds and shaping tomorrow's leaders since 2005.</p>
+      <div class="footer-socials">
+        <a href="#" style="background:#1877F2;">📘</a>
+        <a href="#" style="background:#E4405F;">📸</a>
+        <a href="#" style="background:#FF0000;">▶️</a>
+        <a href="#" style="background:#25D366;">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="about.html">About School</a></li>
+        <li><a href="principal.html">About Principal</a></li>
+        <li><a href="vision.html">Vision & Mission</a></li>
+        <li><a href="achievements.html">Achievements</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Academics</h4>
+      <ul>
+        <li><a href="syllabus.html">Syllabus</a></li>
+        <li><a href="timetable.html">Time Table</a></li>
+        <li><a href="admissions.html">Admissions</a></li>
+        <li><a href="fees.html">School Fees</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">📍 123, School Road, Tamil Nadu</a></li>
+        <li><a href="#">📞 +91 98765 43210</a></li>
+        <li><a href="#">✉️ info@tawschool.edu.in</a></li>
+        <li><a href="contact.html">Contact Form →</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TAW Matric Higher Secondary School. All Rights Reserved. Made with ❤️ for our students.</p>
+  </div>
+</footer>
 
-    function heroGoTo(idx) {
-      _heroIdx = (idx + _heroTotal) % _heroTotal;
-      const track = document.getElementById('heroTrack');
-      if (track) track.style.transform = `translateX(-${_heroIdx * 100}%)`;
-      document.querySelectorAll('.hero-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === _heroIdx);
-      });
-    }
-    function heroNext() { heroGoTo(_heroIdx + 1); }
-    function heroPrev() { heroGoTo(_heroIdx - 1); }
+<script src="script.js"></script>
+<script>
+// Animated counters
+function animateCounter(id, target, suffix='') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  let count = 0;
+  const step = Math.ceil(target / 60);
+  const timer = setInterval(() => {
+    count += step;
+    if (count >= target) { count = target; clearInterval(timer); }
+    el.textContent = count + suffix;
+  }, 30);
+}
 
-    function heroAutoplay(interval) {
-      clearInterval(_heroTimer);
-      if (_heroTotal > 1)
-        _heroTimer = setInterval(heroNext, interval || 5000);
-    }
+// Start on scroll into view
+const statsObserver = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    animateCounter('cnt1', 1200, '+');
+    animateCounter('cnt2', 85, '+');
+    animateCounter('cnt3', 47, '+');
+    animateCounter('cnt4', 20, '+');
+    statsObserver.disconnect();
+  }
+}, { threshold: 0.3 });
 
-    function initCarousel(total) {
-      _heroTotal = total;
-      _heroIdx   = 0;
-
-      // Dot clicks
-      document.querySelectorAll('.hero-dot').forEach(d => {
-        d.addEventListener('click', () => { heroGoTo(+d.dataset.dot); heroAutoplay(); });
-      });
-
-      // Pause on hover
-      const carousel = document.getElementById('heroCarousel');
-      if (carousel) {
-        carousel.addEventListener('mouseenter', () => clearInterval(_heroTimer));
-        carousel.addEventListener('mouseleave', () => heroAutoplay());
-      }
-
-      heroAutoplay();
-    }
-
-    // ── Touch / swipe support ─────────────────────────────────────────────────
-    function addSwipe(el) {
-      let sx = 0;
-      el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
-      el.addEventListener('touchend',   e => {
-        const dx = e.changedTouches[0].clientX - sx;
-        if (Math.abs(dx) > 40) { dx < 0 ? heroNext() : heroPrev(); heroAutoplay(); }
-      });
-    }
-
-    // ── Page loader ───────────────────────────────────────────────────────────
-    async function loadHomePage() {
-      const container = document.getElementById('page-content');
-
-      const [home, heroSlides, gallery, fees, announcements] = await Promise.all([
-        fetch('/api/data/home').then(r => r.json()).catch(() => ({})),
-        fetch('/api/data/heroSlides').then(r => r.json()).catch(() => []),
-        fetch('/api/gallery').then(r => r.json()).catch(() => []),
-        fetch('/api/fees').then(r => r.json()).catch(() => []),
-        fetch('/api/announcements').then(r => r.json()).catch(() => []),
-      ]);
-
-      let slides = [];
-
-      if (Array.isArray(heroSlides)) {
-        slides = heroSlides;
-      } else if (heroSlides && Array.isArray(heroSlides.slides)) {
-        slides = heroSlides.slides;
-      }
-
-      // ── FIX: Inject the Admin Welcome Message at the front of the Carousel ──
-      if (home && home.welcome && (home.welcome.title || home.welcome.content)) {
-        const adminWelcomeSlide = {
-          type: 'text',
-          badge: 'Est. 2000 • TN Matric Board Affiliated',
-          title: home.welcome.title || 'Shakespeare Ideal',
-          titleAccent: 'Matriculation School',
-          subtitle: home.welcome.content || '',
-          btn1Label: 'Apply for Admission 2025',
-          btn1Href: '/admissions.html',
-          btn2Label: 'Explore Our School',
-          btn2Href: '/about.html'
-        };
-        // Put the customized text slide as the first slide item
-        slides.unshift(adminWelcomeSlide);
-      }
-
-      console.log('Processed Carousel Slides:', slides);
-
-      container.innerHTML = `
-        ${buildHeroCarousel(slides)}
-
-        <div class="stats-section">
-          <div class="stats-container">
-            ${(home.stats || []).map(s => `
-              <div>
-                <div class="stat-number">${s.number}</div>
-                <div class="stat-label">${s.label}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <div class="welcome-section">
-          <div>
-            <p class="welcome-tag">Welcome to Our School</p>
-            <h2 class="welcome-title">${(home.welcome || {}).title || ''}</h2>
-            <p class="welcome-desc">${(home.welcome || {}).content || ''}</p>
-            <div class="welcome-btn-group">
-              <a href="/about.html"     class="btn btn-primary btn-small">Read More</a>
-              <a href="/principal.html" class="btn btn-outline btn-small">Meet Our Principal</a>
-            </div>
-          </div>
-          <div class="welcome-features-grid">
-            <div class="welcome-feat-card welcome-feat-caring">
-              <div class="welcome-feat-icon">🌱</div>
-              <div class="welcome-feat-text">Caring Environment</div>
-            </div>
-            <div class="welcome-feat-card welcome-feat-teachers">
-              <div class="welcome-feat-icon">🎓</div>
-              <div class="welcome-feat-text">Dedicated Teachers</div>
-            </div>
-            <div class="welcome-feat-card welcome-feat-facilities">
-              <div class="welcome-feat-icon">🏫</div>
-              <div class="welcome-feat-text">Modern Facilities</div>
-            </div>
-            <div class="welcome-feat-card welcome-feat-cocurricular">
-              <div class="welcome-feat-icon">🎨</div>
-              <div class="welcome-feat-text">Co-curricular Focus</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="features-section">
-          <div class="features-container">
-            <div class="features-header">
-              <p class="features-tag">Our Strengths</p>
-              <h2 class="features-title">Why Choose Shakespeare Ideal?</h2>
-              <div class="features-divider"></div>
-            </div>
-            <div class="features-grid">
-              ${(home.features || []).map(f => `
-                <div class="card features-card">
-                  <div class="feature-icon">${f.icon}</div>
-                  <h3 class="feature-card-title">${f.title}</h3>
-                  <p class="feature-card-desc">${f.description}</p>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <div class="gallery-preview-section">
-          <div class="gallery-preview-header">
-            <p class="gallery-preview-tag">Gallery Highlights</p>
-            <h2 class="gallery-preview-title">School Life in Pictures</h2>
-            <div class="gallery-preview-divider"></div>
-          </div>
-          <div class="gallery-preview-grid">
-            ${gallery.slice(0, 6).map(g => `
-              <div class="gallery-preview-item">
-                <img src="${g.filename}" alt="${g.title}" class="gallery-preview-img">
-                <div class="gallery-preview-overlay">
-                  <span class="gallery-preview-caption">${g.title}</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-          <div class="gallery-preview-footer">
-            <a href="/gallery.html" class="btn btn-primary">View Full Gallery →</a>
-          </div>
-        </div>
-
-        <div class="notice-section">
-          <div class="notice-container">
-            <div class="notice-header">
-              <p class="notice-tag">Latest Updates</p>
-              <h2 class="notice-title">Notice Board</h2>
-              <div class="notice-divider"></div>
-            </div>
-            <div class="notice-list">
-              ${announcements.map(a => `
-                <div class="notice-item">
-                  <div class="notice-bullet"></div>
-                  <span class="notice-text">${a}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <div class="cta-section">
-          <h2 class="cta-title">Ready to Join Our School Family?</h2>
-          <p class="cta-subtitle">Admissions for 2025-26 are now open. Secure your child's bright future today.</p>
-          <div class="cta-btn-group">
-            <a href="/admissions.html" class="btn btn-primary">Apply for Admission</a>
-            <a href="/contact.html"    class="btn btn-outline">Contact Us</a>
-          </div>
-        </div>
-      `;
-
-      if (slides.length > 0) {
-        initCarousel(slides.length);
-        const track = document.getElementById('heroTrack');
-        if (track) addSwipe(track);
-      }
-    }
-
-    loadHomePage();
-  </script>
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) statsObserver.observe(statsEl);
+</script>
 </body>
 </html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About School - TAW Matric School</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.about-hero {
+  background: linear-gradient(135deg, #0F3460 0%, #16213E 60%, #1A1A2E 100%);
+  padding: 6rem 2rem 8rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.about-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 80px;
+  background: var(--light);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.about-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--white);
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  margin-bottom: 1rem;
+}
+.about-hero h1 span { color: var(--accent1); }
+.about-hero p { color: rgba(255,255,255,0.75); font-size:1.05rem; font-weight:600; max-width:580px; margin:0 auto; }
+
+.emoji-float { position:absolute; font-size:3rem; opacity:0.2; animation: floatRand 5s ease-in-out infinite alternate; }
+@keyframes floatRand { 0%{transform:translateY(0)rotate(-15deg);}100%{transform:translateY(-30px)rotate(15deg);} }
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+.about-text h2 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 1rem;
+}
+.about-text p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.about-img-box {
+  background: linear-gradient(135deg, #FFE66D, #FF6B35);
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+  box-shadow: var(--shadow-3d-lg);
+  position: relative;
+  overflow: hidden;
+}
+.about-img-box::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 150px; height: 150px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+}
+
+.info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  margin: 2rem 0;
+}
+.info-card {
+  background: var(--white);
+  border: 3px solid var(--dark);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-3d);
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.info-card:hover { transform: translate(-3px,-3px); box-shadow: 8px 8px 0 rgba(0,0,0,0.25); }
+.info-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; display:block; }
+.info-card h4 { font-family:var(--font-accent); font-weight:800; margin-bottom:0.3rem; font-size:0.95rem; }
+.info-card p { color:#666; font-size:0.82rem; }
+
+.facilities-section { padding: 4rem 0; }
+.facility-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.facility-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--white);
+  border: 3px solid var(--dark);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-3d);
+  transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.facility-item:hover { transform:translate(-3px,-3px); box-shadow: 8px 8px 0 rgba(0,0,0,0.25); }
+.facility-item .fac-icon {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg,var(--accent1),var(--primary));
+  width: 60px; height: 60px;
+  border-radius: 14px;
+  display: flex; align-items:center; justify-content:center;
+  flex-shrink: 0;
+  border: 2px solid var(--dark);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+}
+.facility-item h4 { font-family:var(--font-accent); font-weight:800; margin-bottom:0.4rem; }
+.facility-item p { font-size:0.85rem; color:#666; line-height:1.6; }
+
+@media(max-width:768px){
+  .about-grid{grid-template-columns:1fr;}
+  .about-img-box{height:220px;font-size:5rem;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🏫</div>
+      <div>
+        <div class="nav-logo-text">TAW <span>School</span></div>
+        <div class="nav-logo-sub">Matric Higher Secondary</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="about.html" class="active">🏫 About</a></li>
+      <li><a href="principal.html">👨‍💼 Principal</a></li>
+      <li><a href="vision.html">🌟 Vision</a></li>
+      <li><a href="achievements.html">🏆 Achievements</a></li>
+      <li><a href="rules.html">📋 Rules</a></li>
+      <li><a href="gallery.html">🖼️ Gallery</a></li>
+      <li><a href="admissions.html">📝 Admissions</a></li>
+      <li><a href="fees.html">💰 Fees</a></li>
+      <li><a href="syllabus.html">📚 Syllabus</a></li>
+      <li><a href="timetable.html">⏰ Timetable</a></li>
+      <li><a href="contact.html">📞 Contact</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="about-hero">
+  <span class="emoji-float" style="top:10%;left:5%;">🏫</span>
+  <span class="emoji-float" style="top:20%;right:8%;animation-delay:1s;">📚</span>
+  <span class="emoji-float" style="bottom:20%;left:12%;animation-delay:2s;">✏️</span>
+  <div class="page-hero-tag">🏫 About Our School</div>
+  <h1>Discover <span>TAW School</span></h1>
+  <p>A legacy of excellence, a future of possibilities — all in one vibrant campus!</p>
+</section>
+
+<div class="section" style="padding-top:3rem;">
+
+  <div class="about-grid animate-in">
+    <div class="about-text">
+      <h2>🌟 Our Story</h2>
+      <p>TAW Matric Higher Secondary School was founded in 2005 with a simple but powerful dream — to provide world-class education to every child in our community, regardless of their background.</p>
+      <p>Over the past two decades, we have grown from a small school with 200 students to a thriving educational institution with over 1,200 students, 85+ qualified teachers, and a sprawling campus equipped with modern facilities.</p>
+      <p>We are affiliated with the Tamil Nadu Matriculation Board and follow a holistic curriculum that balances academics with sports, arts, and values education. Our graduates go on to excel in top colleges and universities across India and abroad.</p>
+      <a href="admissions.html" class="btn btn-primary" style="margin-top:1rem;">📝 Join Us Today</a>
+    </div>
+    <div class="about-img-box animate-in">
+      🏫
+      <div style="position:absolute;bottom:20px;right:20px;font-size:1.5rem;">📚✏️🎨</div>
+    </div>
+  </div>
+
+  <!-- INFO CARDS -->
+  <div class="info-cards">
+    <div class="info-card animate-in" style="border-color:var(--primary);background:linear-gradient(135deg,#fff5f0,#fff);">
+      <span class="icon">📍</span>
+      <h4>Location</h4>
+      <p>123, School Road<br>Tamil Nadu - 620 001</p>
+    </div>
+    <div class="info-card animate-in" style="border-color:var(--secondary);background:linear-gradient(135deg,#f0fffd,#fff);">
+      <span class="icon">🏛️</span>
+      <h4>Affiliation</h4>
+      <p>Tamil Nadu Matriculation Board</p>
+    </div>
+    <div class="info-card animate-in" style="border-color:var(--accent1);background:linear-gradient(135deg,#fffdf0,#fff);">
+      <span class="icon">📅</span>
+      <h4>Established</h4>
+      <p>2005 · 20 Years of Excellence</p>
+    </div>
+    <div class="info-card animate-in" style="border-color:var(--accent2);background:linear-gradient(135deg,#fdf0ff,#fff);">
+      <span class="icon">📊</span>
+      <h4>Classes</h4>
+      <p>LKG to 12th Standard</p>
+    </div>
+    <div class="info-card animate-in" style="border-color:var(--accent3);background:linear-gradient(135deg,#fff0f8,#fff);">
+      <span class="icon">🌐</span>
+      <h4>Medium</h4>
+      <p>English & Tamil Medium</p>
+    </div>
+  </div>
+
+  <!-- FACILITIES -->
+  <div class="facilities-section">
+    <div class="section-title">🏗️ Our Facilities</div>
+    <div class="facility-row">
+      <div class="facility-item animate-in">
+        <div class="fac-icon">🔬</div>
+        <div>
+          <h4>Science Laboratories</h4>
+          <p>Fully equipped Physics, Chemistry and Biology labs with modern instruments for practical learning.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">💻</div>
+        <div>
+          <h4>Computer Lab</h4>
+          <p>100-seat computer lab with high-speed internet, latest hardware and software for digital education.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">📖</div>
+        <div>
+          <h4>Library</h4>
+          <p>Over 15,000 books, periodicals, encyclopaedias and e-resources available for students and staff.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">⚽</div>
+        <div>
+          <h4>Sports Ground</h4>
+          <p>Spacious playground for cricket, football, volleyball, kabaddi and athletics with proper facilities.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">🎭</div>
+        <div>
+          <h4>Auditorium</h4>
+          <p>500-seat air-conditioned auditorium for cultural programs, seminars and special events.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">🚌</div>
+        <div>
+          <h4>Transport</h4>
+          <p>Fleet of 15 GPS-tracked school buses covering all major routes with trained drivers and attendants.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">🍽️</div>
+        <div>
+          <h4>Canteen</h4>
+          <p>Hygienic canteen serving nutritious, affordable meals and snacks prepared fresh daily.</p>
+        </div>
+      </div>
+      <div class="facility-item animate-in">
+        <div class="fac-icon">🏥</div>
+        <div>
+          <h4>Medical Room</h4>
+          <p>On-campus first-aid room with a nurse available during school hours for student health care.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>🏫 TAW School</h3>
+      <p>TAW Matric Higher Secondary School – nurturing bright minds since 2005.</p>
+      <div class="footer-socials">
+        <a href="#" style="background:#1877F2;">📘</a>
+        <a href="#" style="background:#E4405F;">📸</a>
+        <a href="#" style="background:#25D366;">💬</a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Quick Links</h4><ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="admissions.html">Admissions</a></li>
+      <li><a href="fees.html">School Fees</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Academics</h4><ul>
+      <li><a href="syllabus.html">Syllabus</a></li>
+      <li><a href="timetable.html">Time Table</a></li>
+      <li><a href="achievements.html">Achievements</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="#">📍 123, School Road, TN</a></li>
+      <li><a href="#">📞 +91 98765 43210</a></li>
+      <li><a href="#">✉️ info@tawschool.edu.in</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 TAW Matric Higher Secondary School. All Rights Reserved.</p></div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

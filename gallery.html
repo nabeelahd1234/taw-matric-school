@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery - TAW Matric School</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.gallery-hero{background:linear-gradient(135deg,#1A1A2E,#EC4899,#FF6B35);padding:5rem 2rem 7rem;text-align:center;position:relative;overflow:hidden;}
+.gallery-hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:70px;background:var(--light);clip-path:ellipse(55% 100% at 50% 100%);}
+.gallery-hero h1{font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);color:var(--white);text-shadow:4px 4px 0 rgba(0,0,0,0.3);margin-bottom:1rem;}
+.gallery-hero h1 span{color:var(--accent1);}
+.gallery-hero p{color:rgba(255,255,255,0.8);font-size:1.05rem;font-weight:600;}
+
+.filter-tabs{display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem;}
+.filter-btn{
+  padding:8px 20px;border-radius:50px;font-weight:800;font-size:0.85rem;
+  border:3px solid var(--dark);box-shadow:var(--shadow-3d);cursor:pointer;
+  transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);background:var(--white);
+}
+.filter-btn:hover,.filter-btn.active{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(0,0,0,0.2);}
+.filter-btn.active{background:var(--primary);color:var(--white);}
+
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:1.2rem;
+}
+.gallery-item{
+  border:3px solid var(--dark);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-3d-lg);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  cursor:pointer;position:relative;aspect-ratio:1.2;
+  display:flex;align-items:center;justify-content:center;
+}
+.gallery-item:hover{transform:translate(-5px,-5px) scale(1.02);box-shadow:var(--shadow-hover);z-index:2;}
+.gallery-item:hover .gallery-overlay{opacity:1;}
+
+.gallery-img{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:5rem;
+  position:relative;
+}
+
+.gallery-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.7);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  opacity:0;transition:opacity 0.3s;color:var(--white);text-align:center;padding:1rem;
+}
+.gallery-overlay span{font-family:var(--font-display);font-size:1.2rem;margin-bottom:0.3rem;}
+.gallery-overlay p{font-size:0.8rem;opacity:0.8;}
+
+.gallery-item:nth-child(1) .gallery-img{background:linear-gradient(135deg,#ffebe0,#ffd0b5);}
+.gallery-item:nth-child(2) .gallery-img{background:linear-gradient(135deg,#e0fff8,#b5ffe9);}
+.gallery-item:nth-child(3) .gallery-img{background:linear-gradient(135deg,#f0e0ff,#e0b5ff);}
+.gallery-item:nth-child(4) .gallery-img{background:linear-gradient(135deg,#fff8dc,#ffecb0);}
+.gallery-item:nth-child(5) .gallery-img{background:linear-gradient(135deg,#e0f0ff,#b5d8ff);}
+.gallery-item:nth-child(6) .gallery-img{background:linear-gradient(135deg,#f0ffe0,#d5ffb0);}
+.gallery-item:nth-child(7) .gallery-img{background:linear-gradient(135deg,#ffe0f0,#ffb5d8);}
+.gallery-item:nth-child(8) .gallery-img{background:linear-gradient(135deg,#e0e0ff,#b5b5ff);}
+.gallery-item:nth-child(9) .gallery-img{background:linear-gradient(135deg,#ffede0,#ffd6b5);}
+.gallery-item:nth-child(10) .gallery-img{background:linear-gradient(135deg,#e0fff0,#b5ffd8);}
+.gallery-item:nth-child(11) .gallery-img{background:linear-gradient(135deg,#ffe0e0,#ffb5b5);}
+.gallery-item:nth-child(12) .gallery-img{background:linear-gradient(135deg,#e8e0ff,#ccb5ff);}
+
+/* LIGHTBOX */
+.lightbox{
+  position:fixed;inset:0;background:rgba(0,0,0,0.92);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9999;opacity:0;pointer-events:none;transition:opacity 0.3s;
+}
+.lightbox.open{opacity:1;pointer-events:all;}
+.lightbox-content{
+  background:var(--white);border:4px solid var(--dark);border-radius:var(--radius);
+  padding:2rem;max-width:500px;width:90%;text-align:center;
+  box-shadow:var(--shadow-3d-lg);transform:scale(0.8);transition:transform 0.3s;
+}
+.lightbox.open .lightbox-content{transform:scale(1);}
+.lightbox-emoji{font-size:8rem;display:block;margin-bottom:1rem;}
+.lightbox-title{font-family:var(--font-display);font-size:1.8rem;margin-bottom:0.5rem;}
+.lightbox-desc{color:#666;margin-bottom:1.5rem;}
+.lightbox-close{
+  position:absolute;top:20px;right:20px;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--primary);color:var(--white);border:3px solid var(--dark);
+  font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-3d);transition:all 0.2s;
+}
+.lightbox-close:hover{transform:scale(1.1);}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-icon">🏫</div><div><div class="nav-logo-text">TAW <span>School</span></div><div class="nav-logo-sub">Matric Higher Secondary</div></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li><li><a href="about.html">🏫 About</a></li>
+      <li><a href="principal.html">👨‍💼 Principal</a></li><li><a href="vision.html">🌟 Vision</a></li>
+      <li><a href="achievements.html">🏆 Achievements</a></li><li><a href="rules.html">📋 Rules</a></li>
+      <li><a href="gallery.html" class="active">🖼️ Gallery</a></li><li><a href="admissions.html">📝 Admissions</a></li>
+      <li><a href="fees.html">💰 Fees</a></li><li><a href="syllabus.html">📚 Syllabus</a></li>
+      <li><a href="timetable.html">⏰ Timetable</a></li><li><a href="contact.html">📞 Contact</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="gallery-hero">
+  <div class="page-hero-tag">🖼️ Memories</div>
+  <h1>Our <span>Gallery</span></h1>
+  <p>A glimpse into the colorful, joyful life at TAW School! 📸</p>
+</section>
+
+<div class="section" style="padding-top:3rem;">
+  <div class="filter-tabs">
+    <button class="filter-btn active" data-filter="all">🌈 All</button>
+    <button class="filter-btn" data-filter="events">🎉 Events</button>
+    <button class="filter-btn" data-filter="sports">⚽ Sports</button>
+    <button class="filter-btn" data-filter="academics">📚 Academics</button>
+    <button class="filter-btn" data-filter="arts">🎨 Arts</button>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-item animate-in" data-cat="events" onclick="openLightbox('🎉','Annual Day 2024','Students performing at the spectacular Annual Day celebration with dance, drama and music.')">
+      <div class="gallery-img">🎉</div>
+      <div class="gallery-overlay"><span>Annual Day 2024</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="sports" onclick="openLightbox('⚽','Football Champions','Our team lifting the Zonal Championship trophy after a thrilling victory!')">
+      <div class="gallery-img">⚽</div>
+      <div class="gallery-overlay"><span>Football Champions</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="academics" onclick="openLightbox('🔬','Science Exhibition','Students showcasing innovative science projects at the annual science fair.')">
+      <div class="gallery-img">🔬</div>
+      <div class="gallery-overlay"><span>Science Exhibition</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="arts" onclick="openLightbox('🎨','Art Competition','Colorful artworks created by our talented students during the annual art fest.')">
+      <div class="gallery-img">🎨</div>
+      <div class="gallery-overlay"><span>Art Competition</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="academics" onclick="openLightbox('🏆','Prize Distribution','Our star students receiving trophies and certificates on Prize Day 2024.')">
+      <div class="gallery-img">🏆</div>
+      <div class="gallery-overlay"><span>Prize Distribution</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="events" onclick="openLightbox('🌳','Nature Walk','Students exploring nature during the annual eco-awareness day field trip.')">
+      <div class="gallery-img">🌳</div>
+      <div class="gallery-overlay"><span>Eco Awareness Day</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="arts" onclick="openLightbox('🎭','Drama Club','An electrifying performance by our Drama Club at the Cultural Fest 2024.')">
+      <div class="gallery-img">🎭</div>
+      <div class="gallery-overlay"><span>Drama Performance</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="sports" onclick="openLightbox('🏃','Sports Day','Students competing in track and field events on the Annual Sports Day.')">
+      <div class="gallery-img">🏃</div>
+      <div class="gallery-overlay"><span>Sports Day 2024</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="events" onclick="openLightbox('🪔','Deepavali Celebration','The school campus lit up beautifully for our Deepavali cultural celebration.')">
+      <div class="gallery-img">🪔</div>
+      <div class="gallery-overlay"><span>Deepavali Fest</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="academics" onclick="openLightbox('💻','Computer Lab','Students learning coding and digital skills in our state-of-the-art computer lab.')">
+      <div class="gallery-img">💻</div>
+      <div class="gallery-overlay"><span>Computer Lab</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="sports" onclick="openLightbox('🏸','Badminton Tournament','Inter-house badminton tournament — intense rallies and great sportsmanship on display.')">
+      <div class="gallery-img">🏸</div>
+      <div class="gallery-overlay"><span>Badminton Tourney</span><p>Click to view</p></div>
+    </div>
+    <div class="gallery-item animate-in" data-cat="events" onclick="openLightbox('🎓','Graduation Day','Class 12 students receiving their certificates on a memorable Graduation Day 2024.')">
+      <div class="gallery-img">🎓</div>
+      <div class="gallery-overlay"><span>Graduation Day</span><p>Click to view</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-content">
+    <span class="lightbox-emoji" id="lb-emoji"></span>
+    <div class="lightbox-title" id="lb-title"></div>
+    <div class="lightbox-desc" id="lb-desc"></div>
+    <button class="btn btn-primary" onclick="closeLightbox()">✕ Close</button>
+  </div>
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand"><h3>🏫 TAW School</h3><p>Nurturing bright minds since 2005.</p><div class="footer-socials"><a href="#" style="background:#1877F2;">📘</a><a href="#" style="background:#E4405F;">📸</a><a href="#" style="background:#25D366;">💬</a></div></div>
+    <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About School</a></li><li><a href="admissions.html">Admissions</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Academics</h4><ul><li><a href="syllabus.html">Syllabus</a></li><li><a href="timetable.html">Time Table</a></li><li><a href="fees.html">School Fees</a></li><li><a href="achievements.html">Achievements</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul><li><a href="#">📍 123, School Road, TN</a></li><li><a href="#">📞 +91 98765 43210</a></li><li><a href="#">✉️ info@tawschool.edu.in</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 TAW Matric Higher Secondary School. All Rights Reserved.</p></div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+// Filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const filter = this.dataset.filter;
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      if (filter === 'all' || item.dataset.cat === filter) {
+        item.style.display = 'flex';
+        item.style.animation = 'none';
+        setTimeout(() => item.style.animation = '', 10);
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+});
+
+function openLightbox(emoji, title, desc) {
+  document.getElementById('lb-emoji').textContent = emoji;
+  document.getElementById('lb-title').textContent = title;
+  document.getElementById('lb-desc').textContent = desc;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) closeLightbox();
+});
+</script>
+</body>
+</html>

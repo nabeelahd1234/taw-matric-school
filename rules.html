@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules & Regulations - TAW Matric School</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.rules-hero{background:linear-gradient(135deg,#1A1A2E,#0D4C92);padding:5rem 2rem 7rem;text-align:center;position:relative;overflow:hidden;}
+.rules-hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:70px;background:var(--light);clip-path:ellipse(55% 100% at 50% 100%);}
+.rules-hero h1{font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);color:var(--white);text-shadow:4px 4px 0 rgba(0,0,0,0.3);margin-bottom:1rem;}
+.rules-hero h1 span{color:var(--accent1);}
+.rules-hero p{color:rgba(255,255,255,0.75);font-size:1.05rem;font-weight:600;}
+
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;}
+.rule-section{
+  background:var(--white);border:3px solid var(--dark);border-radius:var(--radius);
+  padding:2rem;box-shadow:var(--shadow-3d-lg);
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.rule-section:hover{transform:translate(-4px,-4px);box-shadow:var(--shadow-hover);}
+.rule-section-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:2px solid rgba(0,0,0,0.08);}
+.rule-icon{
+  font-size:2rem;width:55px;height:55px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--dark);box-shadow:var(--shadow-3d);flex-shrink:0;
+}
+.rule-section h3{font-family:var(--font-accent);font-size:1.2rem;font-weight:800;}
+
+.rule-list{list-style:none;}
+.rule-list li{
+  display:flex;align-items:flex-start;gap:0.8rem;
+  padding:0.6rem 0;border-bottom:1px dashed rgba(0,0,0,0.08);
+  font-size:0.9rem;color:#555;line-height:1.6;font-weight:600;
+}
+.rule-list li:last-child{border-bottom:none;}
+.rule-bullet{
+  min-width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:800;flex-shrink:0;margin-top:2px;
+}
+
+.rule-section:nth-child(1) .rule-icon{background:linear-gradient(135deg,#fff5f0,#ffe0cc);}
+.rule-section:nth-child(2) .rule-icon{background:linear-gradient(135deg,#f0fffd,#c2fff0);}
+.rule-section:nth-child(3) .rule-icon{background:linear-gradient(135deg,#fffdf0,#fff8cc);}
+.rule-section:nth-child(4) .rule-icon{background:linear-gradient(135deg,#fdf0ff,#f0c2ff);}
+.rule-section:nth-child(5) .rule-icon{background:linear-gradient(135deg,#f0f8ff,#c2e0ff);}
+.rule-section:nth-child(6) .rule-icon{background:linear-gradient(135deg,#f0fff5,#c2ffd9);}
+
+.rule-section:nth-child(1) .rule-bullet{background:var(--primary);color:#fff;}
+.rule-section:nth-child(2) .rule-bullet{background:var(--secondary);color:#fff;}
+.rule-section:nth-child(3) .rule-bullet{background:#B8860B;color:#fff;}
+.rule-section:nth-child(4) .rule-bullet{background:var(--accent2);color:#fff;}
+.rule-section:nth-child(5) .rule-bullet{background:var(--accent5);color:#fff;}
+.rule-section:nth-child(6) .rule-bullet{background:var(--accent4);color:#fff;}
+
+.notice-box{
+  background:linear-gradient(135deg,#fff3cd,#ffe8a0);
+  border:3px solid #B8860B;border-radius:var(--radius);
+  padding:2rem;box-shadow:var(--shadow-3d-lg);
+  text-align:center;margin:2rem 0;
+}
+.notice-box h3{font-family:var(--font-display);font-size:1.5rem;color:#8B6914;margin-bottom:0.8rem;}
+.notice-box p{color:#6B4F0A;font-weight:600;line-height:1.7;}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-icon">🏫</div><div><div class="nav-logo-text">TAW <span>School</span></div><div class="nav-logo-sub">Matric Higher Secondary</div></div></a>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li><li><a href="about.html">🏫 About</a></li>
+      <li><a href="principal.html">👨‍💼 Principal</a></li><li><a href="vision.html">🌟 Vision</a></li>
+      <li><a href="achievements.html">🏆 Achievements</a></li><li><a href="rules.html" class="active">📋 Rules</a></li>
+      <li><a href="gallery.html">🖼️ Gallery</a></li><li><a href="admissions.html">📝 Admissions</a></li>
+      <li><a href="fees.html">💰 Fees</a></li><li><a href="syllabus.html">📚 Syllabus</a></li>
+      <li><a href="timetable.html">⏰ Timetable</a></li><li><a href="contact.html">📞 Contact</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<section class="rules-hero">
+  <div class="page-hero-tag">📋 Guidelines</div>
+  <h1>Rules & <span>Regulations</span></h1>
+  <p>Our rules are designed to create a safe, respectful and joyful environment for all. 🌟</p>
+</section>
+
+<div class="section" style="padding-top:3rem;">
+
+  <div class="notice-box animate-in">
+    <h3>⚠️ Important Notice</h3>
+    <p>All students, parents and staff are expected to read, understand and follow these rules. Adherence to these guidelines ensures a harmonious and productive school environment for everyone. Rules are reviewed annually and updates are communicated through the school diary.</p>
+  </div>
+
+  <div class="rules-grid">
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">⏰</div>
+        <h3>Attendance & Punctuality</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>School begins at 8:30 AM. Students must arrive by 8:20 AM.</li>
+        <li><div class="rule-bullet">2</div>Minimum 85% attendance is mandatory for exams and promotions.</li>
+        <li><div class="rule-bullet">3</div>Late arrivals after 8:35 AM require a written note from parents.</li>
+        <li><div class="rule-bullet">4</div>Absence must be notified to the class teacher by 9:00 AM.</li>
+        <li><div class="rule-bullet">5</div>Medical leave requires a doctor's certificate upon return.</li>
+        <li><div class="rule-bullet">6</div>Planned absences must be requested in advance via school diary.</li>
+      </ul>
+    </div>
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">👔</div>
+        <h3>Uniform & Appearance</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>Full school uniform is compulsory every day except designated days.</li>
+        <li><div class="rule-bullet">2</div>Uniform must be clean, neat and properly ironed at all times.</li>
+        <li><div class="rule-bullet">3</div>Black shoes and white socks are part of the standard uniform.</li>
+        <li><div class="rule-bullet">4</div>ID card must be worn visibly on the school premises daily.</li>
+        <li><div class="rule-bullet">5</div>Hair must be neatly tied or kept; no dyeing or fancy styles.</li>
+        <li><div class="rule-bullet">6</div>No jewellery other than small studs or religious threads allowed.</li>
+      </ul>
+    </div>
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">📚</div>
+        <h3>Academic Conduct</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>Homework must be completed and submitted on time every day.</li>
+        <li><div class="rule-bullet">2</div>Textbooks, notebooks and materials must be brought as per schedule.</li>
+        <li><div class="rule-bullet">3</div>Cheating or malpractice in any form is strictly prohibited.</li>
+        <li><div class="rule-bullet">4</div>Students must actively participate in all classes and activities.</li>
+        <li><div class="rule-bullet">5</div>Mobile phones are NOT permitted on school premises.</li>
+        <li><div class="rule-bullet">6</div>Library books must be returned within the due date.</li>
+      </ul>
+    </div>
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">🤝</div>
+        <h3>Behaviour & Discipline</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>Respect for teachers, staff and fellow students is non-negotiable.</li>
+        <li><div class="rule-bullet">2</div>Bullying, ragging or any form of harassment is strictly banned.</li>
+        <li><div class="rule-bullet">3</div>Students must maintain silence and order in corridors during class hours.</li>
+        <li><div class="rule-bullet">4</div>Damage to school property must be reported and compensated.</li>
+        <li><div class="rule-bullet">5</div>Littering on campus is not permitted; use dustbins provided.</li>
+        <li><div class="rule-bullet">6</div>Use of abusive language is a punishable offence.</li>
+      </ul>
+    </div>
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">🚌</div>
+        <h3>Transport Rules</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>Board and alight from the bus only at designated stops.</li>
+        <li><div class="rule-bullet">2</div>No standing or moving inside the bus while it is in motion.</li>
+        <li><div class="rule-bullet">3</div>Respect the bus driver and attendant at all times.</li>
+        <li><div class="rule-bullet">4</div>Changes in transport route require prior written approval.</li>
+        <li><div class="rule-bullet">5</div>No eating in the school bus to maintain cleanliness.</li>
+        <li><div class="rule-bullet">6</div>Students missing the bus must inform parents immediately.</li>
+      </ul>
+    </div>
+
+    <div class="rule-section animate-in">
+      <div class="rule-section-header">
+        <div class="rule-icon">👨‍👩‍👧</div>
+        <h3>Parent Guidelines</h3>
+      </div>
+      <ul class="rule-list">
+        <li><div class="rule-bullet">1</div>Parents must attend all parent-teacher meetings without fail.</li>
+        <li><div class="rule-bullet">2</div>Any grievances should be directed to the class teacher first.</li>
+        <li><div class="rule-bullet">3</div>Do not visit classrooms during teaching hours without appointment.</li>
+        <li><div class="rule-bullet">4</div>Check and sign the school diary every day for communications.</li>
+        <li><div class="rule-bullet">5</div>Fees must be paid by the due date; late fees will be charged.</li>
+        <li><div class="rule-bullet">6</div>Inform school of any change in emergency contact details promptly.</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand"><h3>🏫 TAW School</h3><p>Nurturing bright minds since 2005.</p><div class="footer-socials"><a href="#" style="background:#1877F2;">📘</a><a href="#" style="background:#E4405F;">📸</a><a href="#" style="background:#25D366;">💬</a></div></div>
+    <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About School</a></li><li><a href="admissions.html">Admissions</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Academics</h4><ul><li><a href="syllabus.html">Syllabus</a></li><li><a href="timetable.html">Time Table</a></li><li><a href="fees.html">School Fees</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul><li><a href="#">📍 123, School Road, TN</a></li><li><a href="#">📞 +91 98765 43210</a></li><li><a href="#">✉️ info@tawschool.edu.in</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 TAW Matric Higher Secondary School. All Rights Reserved.</p></div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
