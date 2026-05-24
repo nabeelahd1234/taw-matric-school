@@ -6,39 +6,96 @@
 <title>TAW Matric School - Home</title>
 <link rel="stylesheet" href="style.css">
 <style>
-/* ===== HERO ===== */
+/* ===== HERO CAROUSEL ===== */
 .hero {
+  position: relative;
+  overflow: hidden;
   min-height: 88vh;
-  background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+}
+
+/* The sliding track */
+.hero-track {
+  display: flex;
+  transition: transform 0.75s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+  height: 88vh;
+  min-height: 560px;
+}
+
+/* Each slide = full hero */
+.hero-slide {
+  min-width: 100%;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
   padding: 2rem;
 }
 
+/* Per-slide backgrounds */
+.hero-slide:nth-child(1) { background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%); }
+.hero-slide:nth-child(2) { background: linear-gradient(135deg, #1a0533 0%, #3b0764 50%, #6d28d9 100%); }
+.hero-slide:nth-child(3) { background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #0a7a5a 100%); }
+.hero-slide:nth-child(4) { background: linear-gradient(135deg, #4a0f0a 0%, #7c1d17 50%, #b45309 100%); }
+.hero-slide:nth-child(5) { background: linear-gradient(135deg, #0c1445 0%, #1e3a8a 50%, #1d4ed8 100%); }
+
+/* Optional real image inside a slide */
+.hero-slide-img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+.hero-slide-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1;
+}
+
+/* Animated circles (per-slide, shared class) */
 .hero-bg-circles {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 1;
 }
 .hero-circle {
   position: absolute;
   border-radius: 50%;
   opacity: 0.12;
 }
-.hero-circle:nth-child(1) { width:600px;height:600px;background:var(--primary);top:-200px;right:-200px;animation:pulse 6s ease-in-out infinite; }
-.hero-circle:nth-child(2) { width:400px;height:400px;background:var(--secondary);bottom:-150px;left:-100px;animation:pulse 8s ease-in-out 2s infinite; }
-.hero-circle:nth-child(3) { width:250px;height:250px;background:var(--accent2);top:50%;left:40%;animation:pulse 5s ease-in-out 1s infinite; }
+.hero-slide:nth-child(1) .hero-circle:nth-child(1){width:600px;height:600px;background:var(--primary);top:-200px;right:-200px;animation:pulse 6s ease-in-out infinite;}
+.hero-slide:nth-child(1) .hero-circle:nth-child(2){width:400px;height:400px;background:var(--secondary);bottom:-150px;left:-100px;animation:pulse 8s ease-in-out 2s infinite;}
+.hero-slide:nth-child(1) .hero-circle:nth-child(3){width:250px;height:250px;background:var(--accent2);top:50%;left:40%;animation:pulse 5s ease-in-out 1s infinite;}
+
+.hero-slide:nth-child(2) .hero-circle:nth-child(1){width:600px;height:600px;background:#a855f7;top:-200px;left:-200px;animation:pulse 6s ease-in-out infinite;}
+.hero-slide:nth-child(2) .hero-circle:nth-child(2){width:350px;height:350px;background:#ec4899;bottom:-100px;right:-100px;animation:pulse 7s ease-in-out 1s infinite;}
+.hero-slide:nth-child(2) .hero-circle:nth-child(3){width:200px;height:200px;background:#fbbf24;top:30%;right:20%;animation:pulse 5s ease-in-out 2s infinite;}
+
+.hero-slide:nth-child(3) .hero-circle:nth-child(1){width:500px;height:500px;background:#34d399;top:-150px;right:-150px;animation:pulse 6s ease-in-out infinite;}
+.hero-slide:nth-child(3) .hero-circle:nth-child(2){width:350px;height:350px;background:#fbbf24;bottom:-100px;left:-100px;animation:pulse 8s ease-in-out 2s infinite;}
+.hero-slide:nth-child(3) .hero-circle:nth-child(3){width:200px;height:200px;background:#6ee7b7;top:40%;left:35%;animation:pulse 5s ease-in-out 1s infinite;}
+
+.hero-slide:nth-child(4) .hero-circle:nth-child(1){width:500px;height:500px;background:#f97316;top:-150px;right:-100px;animation:pulse 6s ease-in-out infinite;}
+.hero-slide:nth-child(4) .hero-circle:nth-child(2){width:300px;height:300px;background:#fbbf24;bottom:-80px;left:-80px;animation:pulse 7s ease-in-out 1.5s infinite;}
+.hero-slide:nth-child(4) .hero-circle:nth-child(3){width:180px;height:180px;background:#ef4444;top:30%;left:30%;animation:pulse 5s ease-in-out 0.5s infinite;}
+
+.hero-slide:nth-child(5) .hero-circle:nth-child(1){width:600px;height:600px;background:#3b82f6;top:-200px;right:-200px;animation:pulse 6s ease-in-out infinite;}
+.hero-slide:nth-child(5) .hero-circle:nth-child(2){width:400px;height:400px;background:#4ECDC4;bottom:-150px;left:-100px;animation:pulse 8s ease-in-out 2s infinite;}
+.hero-slide:nth-child(5) .hero-circle:nth-child(3){width:250px;height:250px;background:#a855f7;top:45%;left:38%;animation:pulse 5s ease-in-out 1s infinite;}
 
 @keyframes pulse { 0%,100%{transform:scale(1);}50%{transform:scale(1.15);} }
 
+/* Floating emojis */
 .hero-floating-emojis span {
   position: absolute;
   font-size: 2.5rem;
   animation: floatUp 6s ease-in-out infinite;
   pointer-events: none;
+  z-index: 2;
 }
 .hero-floating-emojis span:nth-child(1){left:5%;top:15%;animation-delay:0s;}
 .hero-floating-emojis span:nth-child(2){left:10%;top:70%;animation-delay:1s;}
@@ -52,11 +109,29 @@
   50%{transform:translateY(-25px) rotate(10deg);}
 }
 
+/* Slide image tag (top-left) */
+.hero-slide-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.4);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 50px;
+  margin-bottom: 0.75rem;
+  backdrop-filter: blur(6px);
+}
+
+/* The actual hero content inside each slide */
 .hero-content {
   text-align: center;
   position: relative;
-  z-index: 2;
+  z-index: 3;
   max-width: 900px;
+  width: 100%;
 }
 
 .hero-badge {
@@ -72,10 +147,7 @@
   font-size: 0.85rem;
   letter-spacing: 1px;
   margin-bottom: 1.5rem;
-  animation: slideDown 0.8s ease both;
 }
-
-@keyframes slideDown { from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);} }
 
 .hero-title {
   font-family: var(--font-display);
@@ -83,7 +155,6 @@
   color: var(--white);
   line-height: 1.1;
   margin-bottom: 0.5rem;
-  animation: slideUp 0.8s 0.2s ease both;
 }
 .hero-title .highlight {
   color: var(--primary);
@@ -106,28 +177,131 @@
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 3vw, 2rem);
   color: var(--secondary);
-  margin-bottom: 1.5rem;
-  animation: slideUp 0.8s 0.3s ease both;
+  margin-bottom: 1rem;
 }
 
 .hero-desc {
-  color: rgba(255,255,255,0.7);
-  font-size: 1.1rem;
-  max-width: 580px;
-  margin: 0 auto 2.5rem;
+  color: rgba(255,255,255,0.75);
+  font-size: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto 1.5rem;
   font-weight: 600;
   line-height: 1.7;
-  animation: slideUp 0.8s 0.4s ease both;
 }
 
-@keyframes slideUp { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-30px);}to{opacity:1;transform:translateY(0);} }
+@keyframes slideUp   { from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}  }
 
 .hero-btns {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  animation: slideUp 0.8s 0.5s ease both;
+}
+
+/* Slide image strip at bottom of each slide */
+.hero-slide-imgstrip {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 110px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0;
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-slide-imgstrip-photo {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  opacity: 0.25;
+  background: rgba(255,255,255,0.04);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Nav arrows */
+.hero-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.hero-nav-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 24px rgba(255,107,53,0.5);
+}
+.hero-nav-prev { left: 20px; }
+.hero-nav-next { right: 20px; }
+
+/* Dots */
+.hero-dots {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+}
+.hero-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.hero-dot.active {
+  background: var(--primary);
+  width: 30px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255,107,53,0.7);
+}
+
+/* Progress bar */
+.hero-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 4px;
+  background: var(--primary);
+  z-index: 20;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(255,107,53,0.8);
+}
+
+/* Slide counter */
+.hero-counter {
+  position: absolute;
+  top: 16px; right: 20px;
+  z-index: 20;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.8);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 5px 13px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
 .hero-stats {
@@ -336,11 +510,238 @@
   margin: 0.8rem auto 0;
 }
 
+/* ===== HERO CAROUSEL ===== */
+.hero-carousel-wrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 2.5rem auto 0;
+  position: relative;
+  z-index: 3;
+}
+
+.carousel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+}
+
+.carousel-track-container {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 3px solid rgba(255,255,255,0.15);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 420px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Slide backgrounds using gradients + emoji art as placeholders */
+.carousel-slide:nth-child(1) { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); }
+.carousel-slide:nth-child(2) { background: linear-gradient(135deg, #1a0533, #3b0764, #5b21b6); }
+.carousel-slide:nth-child(3) { background: linear-gradient(135deg, #064e3b, #065f46, #047857); }
+.carousel-slide:nth-child(4) { background: linear-gradient(135deg, #7c1d17, #991b1b, #b45309); }
+.carousel-slide:nth-child(5) { background: linear-gradient(135deg, #0c1445, #1e3a8a, #1d4ed8); }
+
+.carousel-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Pattern overlay for placeholder slides */
+.carousel-slide-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 25% 25%, white 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, white 2px, transparent 2px);
+  background-size: 50px 50px;
+}
+
+.carousel-slide-visual {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8rem;
+  opacity: 0.18;
+  pointer-events: none;
+  user-select: none;
+  filter: blur(1px);
+}
+
+.carousel-slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.3) 45%,
+    rgba(0,0,0,0.05) 100%
+  );
+}
+
+.carousel-slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem 2.5rem;
+  z-index: 2;
+}
+
+.slide-tag {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 50px;
+  margin-bottom: 0.6rem;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.slide-tag.teal   { background: var(--secondary); color: var(--dark); }
+.slide-tag.yellow { background: var(--accent1); color: var(--dark); }
+.slide-tag.purple { background: var(--accent2); }
+.slide-tag.blue   { background: var(--accent5); }
+
+.carousel-slide-content h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
+.carousel-slide-content p {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.5;
+  max-width: 520px;
+}
+
+/* Arrow buttons */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.carousel-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 24px rgba(255,107,53,0.5);
+}
+.carousel-btn-prev { left: 14px; }
+.carousel-btn-next { right: 14px; }
+
+/* Dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.2rem;
+}
+.carousel-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+.carousel-dot.active {
+  background: var(--primary);
+  width: 28px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(255,107,53,0.6);
+}
+
+/* Slide counter */
+.carousel-counter {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,0.8);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  z-index: 10;
+}
+
+/* Progress bar */
+.carousel-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 0;
+  z-index: 10;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(255,107,53,0.8);
+}
+
 @media(max-width:768px){
   .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .hero-track { height: 100svh; min-height: 500px; }
+  .hero-nav-btn { width: 40px; height: 40px; font-size: 1rem; }
+  .hero-nav-prev { left: 10px; }
+  .hero-nav-next { right: 10px; }
 }
 @media(max-width:480px){
   .hero-stats{grid-template-columns:1fr;max-width:300px;}
+  .hero-track { height: 100svh; }
+  .hero-btns { flex-direction: column; align-items: center; }
 }
 </style>
 </head>
@@ -376,32 +777,137 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- HERO (Full-screen Carousel) -->
 <section class="hero">
-  <div class="hero-bg-circles">
-    <div class="hero-circle"></div>
-    <div class="hero-circle"></div>
-    <div class="hero-circle"></div>
+
+  <!-- Prev/Next -->
+  <button class="hero-nav-btn hero-nav-prev" id="heroPrev" aria-label="Previous slide">&#8592;</button>
+  <button class="hero-nav-btn hero-nav-next" id="heroNext" aria-label="Next slide">&#8594;</button>
+
+  <!-- Counter & Progress -->
+  <div class="hero-counter" id="heroCounter">1 / 5</div>
+  <div class="hero-progress" id="heroProgress"></div>
+
+  <!-- Dots -->
+  <div class="hero-dots" id="heroDots">
+    <button class="hero-dot active" data-index="0"></button>
+    <button class="hero-dot" data-index="1"></button>
+    <button class="hero-dot" data-index="2"></button>
+    <button class="hero-dot" data-index="3"></button>
+    <button class="hero-dot" data-index="4"></button>
   </div>
-  <div class="hero-floating-emojis">
-    <span>📚</span><span>✏️</span><span>🎨</span><span>🔬</span><span>🌟</span><span>🎒</span>
-  </div>
-  <div class="hero-content">
-    <div class="hero-badge">⭐ Est. 2005 · Excellence in Education ⭐</div>
-    <h1 class="hero-title">
-      Welcome to<br><span class="highlight">TAW Matric</span>
-    </h1>
-    <p class="hero-sub">Higher Secondary School</p>
-    <p class="hero-desc">
-      Where every child's potential is nurtured with love, knowledge,
-      and the joy of learning! 🌈 Building tomorrow's leaders today.
-    </p>
-    <div class="hero-btns">
-      <a href="admissions.html" class="btn btn-primary">📝 Apply Now</a>
-      <a href="about.html" class="btn btn-secondary">🏫 About Us</a>
-      <a href="contact.html" class="btn btn-accent">📞 Contact</a>
+
+  <!-- Sliding track -->
+  <div class="hero-track" id="heroTrack">
+
+    <!-- SLIDE 1: Welcome / Campus -->
+    <div class="hero-slide">
+      <!-- Real photo: <img class="hero-slide-img" src="images/campus.jpg" alt="Campus"><div class="hero-slide-img-overlay"></div> -->
+      <div class="hero-bg-circles">
+        <div class="hero-circle"></div><div class="hero-circle"></div><div class="hero-circle"></div>
+      </div>
+      <div class="hero-floating-emojis">
+        <span>📚</span><span>✏️</span><span>🎨</span><span>🔬</span><span>🌟</span><span>🎒</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">⭐ Est. 2005 · Excellence in Education ⭐</div>
+        <h1 class="hero-title">Welcome to<br><span class="highlight">TAW Matric</span></h1>
+        <p class="hero-sub">Higher Secondary School</p>
+        <p class="hero-desc">Where every child's potential is nurtured with love, knowledge, and the joy of learning! 🌈 Building tomorrow's leaders today.</p>
+        <div class="hero-btns">
+          <a href="admissions.html" class="btn btn-primary">📝 Apply Now</a>
+          <a href="about.html" class="btn btn-secondary">🏫 About Us</a>
+          <a href="contact.html" class="btn btn-accent">📞 Contact</a>
+        </div>
+      </div>
     </div>
-  </div>
+
+    <!-- SLIDE 2: Achievements -->
+    <div class="hero-slide">
+      <!-- Real photo: <img class="hero-slide-img" src="images/achievements.jpg" alt="Achievements"><div class="hero-slide-img-overlay"></div> -->
+      <div class="hero-bg-circles">
+        <div class="hero-circle"></div><div class="hero-circle"></div><div class="hero-circle"></div>
+      </div>
+      <div class="hero-floating-emojis">
+        <span>🏆</span><span>🥇</span><span>🎖️</span><span>🌟</span><span>🏅</span><span>✨</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge" style="border-color:#a855f7;color:#d8b4fe;background:rgba(168,85,247,0.15);">🏆 Hall of Champions · TAW Pride 🏆</div>
+        <h1 class="hero-title">Champions at<br><span class="highlight" style="color:#c084fc;text-shadow:0 0 40px rgba(168,85,247,0.6);">Every Level</span></h1>
+        <p class="hero-sub" style="color:#d8b4fe;">Winning Year After Year</p>
+        <p class="hero-desc">Our students shine in academics, sports, arts and science olympiads — bringing gold medals and glory to TAW Matric every single year!</p>
+        <div class="hero-btns">
+          <a href="achievements.html" class="btn btn-purple">🏆 View Achievements</a>
+          <a href="admissions.html" class="btn btn-accent">📝 Join the Champions</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Science & Labs -->
+    <div class="hero-slide">
+      <!-- Real photo: <img class="hero-slide-img" src="images/labs.jpg" alt="Labs"><div class="hero-slide-img-overlay"></div> -->
+      <div class="hero-bg-circles">
+        <div class="hero-circle"></div><div class="hero-circle"></div><div class="hero-circle"></div>
+      </div>
+      <div class="hero-floating-emojis">
+        <span>🔬</span><span>⚗️</span><span>🧪</span><span>💡</span><span>🖥️</span><span>📐</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge" style="border-color:#4ECDC4;color:#4ECDC4;background:rgba(78,205,196,0.15);">🔬 State-of-the-Art Labs · Hands-On Learning 🔬</div>
+        <h1 class="hero-title">Science &amp;<br><span class="highlight" style="color:#34d399;text-shadow:0 0 40px rgba(52,211,153,0.6);">Discovery</span></h1>
+        <p class="hero-sub" style="color:#6ee7b7;">Learn by Doing</p>
+        <p class="hero-desc">Modern science, computer and language labs equipped with the latest tools — where curiosity becomes knowledge through real experiments.</p>
+        <div class="hero-btns">
+          <a href="syllabus.html" class="btn btn-secondary">📚 View Syllabus</a>
+          <a href="about.html" class="btn btn-accent">🏫 Explore Campus</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Cultural Events -->
+    <div class="hero-slide">
+      <!-- Real photo: <img class="hero-slide-img" src="images/cultural.jpg" alt="Cultural Events"><div class="hero-slide-img-overlay"></div> -->
+      <div class="hero-bg-circles">
+        <div class="hero-circle"></div><div class="hero-circle"></div><div class="hero-circle"></div>
+      </div>
+      <div class="hero-floating-emojis">
+        <span>🎨</span><span>🎭</span><span>🎶</span><span>💃</span><span>🎉</span><span>🎊</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge" style="border-color:#FFE66D;color:#FFE66D;background:rgba(255,230,109,0.15);">🎨 Arts · Culture · Celebrations 🎨</div>
+        <h1 class="hero-title">Culture &amp;<br><span class="highlight" style="color:#fbbf24;text-shadow:0 0 40px rgba(251,191,36,0.6);">Creativity</span></h1>
+        <p class="hero-sub" style="color:#fde68a;">Celebrate Every Talent</p>
+        <p class="hero-desc">Annual fests, talent shows, cultural programmes and art exhibitions — we nurture every student's creative spark and celebrate their uniqueness.</p>
+        <div class="hero-btns">
+          <a href="gallery.html" class="btn btn-accent">🖼️ View Gallery</a>
+          <a href="contact.html" class="btn btn-primary">📞 Visit Us</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Results & Admissions -->
+    <div class="hero-slide">
+      <!-- Real photo: <img class="hero-slide-img" src="images/results.jpg" alt="Results"><div class="hero-slide-img-overlay"></div> -->
+      <div class="hero-bg-circles">
+        <div class="hero-circle"></div><div class="hero-circle"></div><div class="hero-circle"></div>
+      </div>
+      <div class="hero-floating-emojis">
+        <span>🌟</span><span>📊</span><span>🎓</span><span>📝</span><span>💯</span><span>🚀</span>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge" style="border-color:#3B82F6;color:#93c5fd;background:rgba(59,130,246,0.15);">🎓 Admissions Open 2025–26 · Apply Today 🎓</div>
+        <h1 class="hero-title">100% Pass<br><span class="highlight" style="color:#60a5fa;text-shadow:0 0 40px rgba(96,165,250,0.6);">Every Year</span></h1>
+        <p class="hero-sub" style="color:#93c5fd;">Join TAW Matric School</p>
+        <p class="hero-desc">Consistent top results in Tamil Nadu board exams. Distinction holders, state rankers and happy graduates — your child's bright future starts here!</p>
+        <div class="hero-btns">
+          <a href="admissions.html" class="btn btn-primary">📝 Apply Now</a>
+          <a href="fees.html" class="btn btn-secondary">💰 View Fees</a>
+          <a href="contact.html" class="btn btn-accent">📞 Enquire</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /hero-track -->
 </section>
 
 <!-- STATS STRIP -->
@@ -586,6 +1092,81 @@ const statsObserver = new IntersectionObserver((entries) => {
 
 const statsEl = document.querySelector('.hero-stats');
 if (statsEl) statsObserver.observe(statsEl);
+</script>
+<script>
+// ===== HERO FULL-SCREEN CAROUSEL =====
+(function() {
+  const track    = document.getElementById('heroTrack');
+  const dots     = document.querySelectorAll('.hero-dot');
+  const prevBtn  = document.getElementById('heroPrev');
+  const nextBtn  = document.getElementById('heroNext');
+  const counter  = document.getElementById('heroCounter');
+  const progress = document.getElementById('heroProgress');
+  const total    = dots.length;
+  let current    = 0;
+  let autoTimer  = null;
+  let progTimer  = null;
+  let progVal    = 0;
+  const AUTO_MS  = 5000;
+
+  function goTo(idx) {
+    if (idx < 0) idx = total - 1;
+    if (idx >= total) idx = 0;
+    current = idx;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = `${current + 1} / ${total}`;
+    resetProgress();
+  }
+
+  function resetProgress() {
+    clearInterval(progTimer);
+    progVal = 0;
+    progress.style.width = '0%';
+    progTimer = setInterval(() => {
+      progVal += 100 / (AUTO_MS / 80);
+      if (progVal >= 100) progVal = 100;
+      progress.style.width = progVal + '%';
+    }, 80);
+  }
+
+  function startAuto() {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => goTo(current + 1), AUTO_MS);
+    resetProgress();
+  }
+
+  function stopAuto() {
+    clearInterval(autoTimer);
+    clearInterval(progTimer);
+    progress.style.width = '0%';
+  }
+
+  prevBtn.addEventListener('click', () => { goTo(current - 1); stopAuto(); startAuto(); });
+  nextBtn.addEventListener('click', () => { goTo(current + 1); stopAuto(); startAuto(); });
+  dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.index); stopAuto(); startAuto(); }));
+
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    hero.addEventListener('mouseenter', stopAuto);
+    hero.addEventListener('mouseleave', startAuto);
+  }
+
+  let touchStartX = 0;
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) { goTo(current + (diff > 0 ? 1 : -1)); stopAuto(); startAuto(); }
+  }, { passive: true });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  { goTo(current - 1); stopAuto(); startAuto(); }
+    if (e.key === 'ArrowRight') { goTo(current + 1); stopAuto(); startAuto(); }
+  });
+
+  goTo(0);
+  startAuto();
+})();
 </script>
 </body>
 </html>
